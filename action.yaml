@@ -1,0 +1,69 @@
+name: 'Start Colony Sandbox'
+description: 'Starts a sandbox in Colony and returns its ID'
+author: 'Quali'
+inputs:
+  space:
+    description: 'Colony space'
+    required: false
+  blueprint_name:
+    description: 'Name of Blueprint'
+    required: false
+  sandbox_name:
+    description: 'Colony Sandbox Name'
+    required: false
+  colony_token:
+    description: 'Colony longterm token'
+    required: true
+
+outputs:
+  sandbox_id:
+    description: 'The ID of launched Colony Sandbox'
+    value: ${{ steps.start-sandbox.outputs.sandbox-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: start-sandbox
+      # run: .github/actions/start-sandbox/start-sb.sh
+      # run: ${{ github.action_path }}/start-sb.sh
+      run: |
+        PAYLOAD=(
+          "{
+            'sandbox_name':'${{ inputs.sandbox_name }}',
+            'blueprint_name':'${{ inputs.blueprint_name }}',
+            'automation': true
+          }"
+        )
+
+        sb=`curl --silent -X POST "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox" \
+               -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}" \
+               -H "Content-Type:  application/json" -d "$PAYLOAD"` || exit 1
+        
+        sb=`echo $sb | sed 's/.*:"//' | sed 's/".*//'`
+        echo "Sandbox with id $sb has been started"
+        
+        echo "::set-output name=sandbox-id::$(echo $sb)"
+      shell: bash
+    - id: wait-sandbox
+      # run: .github/actions/start-sandbox/wait-sb.sh
+      # run: ${{ github.action_path }}/wait-sb.sh
+      run: |
+        echo "Waiting for sandbox ${{ inputs.sandbox_name }}"
+        timeout=`date --date="15 minutes" +%s`
+        status=''
+        while [[ $(date +%s) -le $timeout && $status != "Active" ]]; do
+          echo "****"
+          sleep 25
+          details=`curl --silent \
+            -X GET "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox/${SANDBOX_ID}" \
+            -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}"`
+          status=`echo $details | sed  "s/.*\"sandbox_status\":\"//" | sed "s/\".*//"`
+          echo "Status is $status"
+        done
+        if [[ $status != "Active" ]]; then
+          echo "Timeout was reached or Sandbox is active with errors"
+          exit 1
+        fi
+      env:
+        SANDBOX_ID: ${{ steps.start-sandbox.outputs.sandbox-id }}
+      shell: bash
