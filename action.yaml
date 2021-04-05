@@ -4,16 +4,32 @@ author: 'Quali'
 inputs:
   space:
     description: 'Colony space'
-    required: false
+    required: true
   blueprint_name:
     description: 'Name of Blueprint'
-    required: false
+    required: true
   sandbox_name:
     description: 'Colony Sandbox Name'
     required: false
   colony_token:
     description: 'Colony longterm token'
     required: true
+  branch:
+    required: true
+    default: 'master'
+  duration:
+    required: false
+    default: '120'
+  timeout:
+    required: false
+    default: '0'
+  artifacts:
+    required: false
+  inputs:
+    required: false
+  debug:
+    required: false
+    default: 'false'
 
 outputs:
   sandbox_id:
@@ -23,47 +39,31 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: start-sandbox
-      # run: .github/actions/start-sandbox/start-sb.sh
-      # run: ${{ github.action_path }}/start-sb.sh
-      run: |
-        PAYLOAD=(
-          "{
-            'sandbox_name':'${{ inputs.sandbox_name }}',
-            'blueprint_name':'${{ inputs.blueprint_name }}',
-            'automation': true
-          }"
-        )
+    - id: extract_branch
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
-        sb=`curl --silent -X POST "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox" \
-               -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}" \
-               -H "Content-Type:  application/json" -d "$PAYLOAD"` || exit 1
-        
-        sb=`echo $sb | sed 's/.*:"//' | sed 's/".*//'`
-        echo "Sandbox with id $sb has been started"
+    - id: start-sandbox
+      run: |
+        sb_name=${{ inputs.sandbox_name }}
+        [ -n $sb_name ] || sb_name=${{ inputs.blueprint_name }}
+
+        #Run start command
+        sb=$(${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" ${{ inputs.duration }}
+              "${{ steps.extract_branch.outputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}")
         
         echo "::set-output name=sandbox-id::$(echo $sb)"
-      shell: bash
-    - id: wait-sandbox
-      # run: .github/actions/start-sandbox/wait-sb.sh
-      # run: ${{ github.action_path }}/wait-sb.sh
-      run: |
-        echo "Waiting for sandbox ${{ inputs.sandbox_name }}"
-        timeout=`date --date="15 minutes" +%s`
-        status=''
-        while [[ $(date +%s) -le $timeout && $status != "Active" ]]; do
-          echo "****"
-          sleep 25
-          details=`curl --silent \
-            -X GET "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox/${SANDBOX_ID}" \
-            -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}"`
-          status=`echo $details | sed  "s/.*\"sandbox_status\":\"//" | sed "s/\".*//"`
-          echo "Status is $status"
-        done
-        if [[ $status != "Active" ]]; then
-          echo "Timeout was reached or Sandbox is active with errors"
-          exit 1
-        fi
       env:
-        SANDBOX_ID: ${{ steps.start-sandbox.outputs.sandbox-id }}
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
+      shell: bash
+          
+    - id: wait-sandbox
+      if: ${{ inputs.wait != '0' }}
+      run: |
+        sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
+        timeout=${{ inputs.timeout }}
+
+        #Run wait command
+        ${{ github.action_path }}/wait.py $sandbox $timeout
       shell: bash
