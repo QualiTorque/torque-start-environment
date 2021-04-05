@@ -59,7 +59,7 @@ runs:
       shell: bash
           
     - id: wait-sandbox
-      if: ${{ inputs.timeout != '0' }}
+      #if: ${{ inputs.wait != '0' }}
       run: |
         sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
         timeout=${{ inputs.timeout }}
