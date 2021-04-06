@@ -62,5 +62,5 @@ runs:
         [ "$timeout" = "0" ] && (echo "No need to wait" && exit 0) 
 
         #Run wait command
-        ${{ github.action_path }}/wait.py $sandbox $timeout
+        python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
       shell: bash
