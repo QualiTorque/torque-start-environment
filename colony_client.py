@@ -41,6 +41,8 @@ class ColonyClient:
         response = self.session.request(**request_args)
         if response.status_code >= 400:
             print(response.request)
+            print(response.text)
+            print(response.json())
             message = ";".join([f"{err['name']}: {err['message']}" for err in response.json().get("errors", [])])
             raise Exception(message)
 
