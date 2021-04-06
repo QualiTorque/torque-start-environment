@@ -59,8 +59,10 @@ runs:
         sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
         timeout=${{ inputs.timeout }}
 
-        [ "$timeout" = "0" ] && (echo "No need to wait" && exit 0) 
-
-        #Run wait command
-        python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
+        if [ "$timeout" = "0" ]; then
+          echo "No need to wait"
+        else 
+          #Run wait command
+          python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
+        fi
       shell: bash
