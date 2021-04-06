@@ -43,7 +43,6 @@ if __name__ == "__main__":
 
     while (datetime.datetime.now() - start_time).seconds < timeout * 60:
         try:
-            print (f"run {sandbox_id}")
             sandbox = client.get_sandbox(sandbox_id)
         except Exception as e:
             sys.stderr.write(f"Unable to get sandbox with ID {sandbox_id}; reason: {e}")
@@ -64,7 +63,7 @@ if __name__ == "__main__":
             time.sleep(30)
 
         else:
-            sys.stderr.write("Launching failed. The state of Sandbox {sandbox_id} is: {status}\n")
+            sys.stderr.write(f"Launching failed. The state of Sandbox {sandbox_id} is: {status}\n")
             sys.exit(1)
 
     sys.stderr.write(f"Sandbox {sandbox_id} was not active after the provided timeout of {timeout} minutes\n")

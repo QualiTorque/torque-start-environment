@@ -25,7 +25,7 @@ class ColonyClient:
             raise ValueError("Method must be in [GET, POST, PUT, DELETE]")
 
         url = f"{self.base_api_url}/{endpoint}"
-        
+        print(f"[debug] Url to call: {url}")
         request_args = {
             "method": method,
             "url": url,
@@ -40,7 +40,7 @@ class ColonyClient:
 
         response = self.session.request(**request_args)
         if response.status_code >= 400:
-            print(response.request)
+            print(response.request.body)
             print(response.text)
             print(response.json())
             message = ";".join([f"{err['name']}: {err['message']}" for err in response.json().get("errors", [])])
@@ -80,6 +80,7 @@ class ColonyClient:
     def get_sandbox(self, sandbox_id: str) -> dict:
         """Returns Sandbox as a json"""
         path = f"sandbox/{sandbox_id}"
+        print(f"[debug] took {sandbox_id}")
         
         res = self._request(path, method="GET")
 
@@ -90,3 +91,4 @@ class ColonyClient:
         path = f"sandbox/{sandbox_id}"
 
         res = self._request(path, method="DELETE")
+
