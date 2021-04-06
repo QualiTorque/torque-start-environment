@@ -44,6 +44,7 @@ runs:
         if [ -n ${{ inputs.sandbox_name }} ]; then
           sb_name=${{ inputs.sandbox_name }}
         else
+          echo "the sandbox name has not been provided"
           sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
         fi
 
