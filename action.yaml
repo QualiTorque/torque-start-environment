@@ -78,3 +78,6 @@ runs:
           python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
         fi
       shell: bash
+      env:
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
