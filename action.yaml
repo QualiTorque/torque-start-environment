@@ -14,6 +14,8 @@ inputs:
   colony_token:
     description: 'Colony longterm token'
     required: true
+  colony_account:
+    required: false
   branch:
     required: false
   duration:
@@ -28,21 +30,18 @@ inputs:
     required: false
 
 outputs:
-  sandbox_id:
+  sandbox-id:
     description: 'The ID of launched Colony Sandbox'
     value: ${{ steps.start-sandbox.outputs.sandbox-id }}
-  sandbox_shortcuts:
+  sandbox-shortcuts:
     description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
-  sandbox_details:
+  sandbox-details:
     description: 'Full sandbox definition in json format'
 
 runs:
   using: "composite"
   steps:
-    - id: extract_branch
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-
+    
     - id: start-sandbox
       run: |
         if [ -n "${{ inputs.sandbox_name }}" ]; then
@@ -55,8 +54,8 @@ runs:
         echo "Sandbox name: ${sb_name}"
 
         #Run start command
-        python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
-          '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}'
+        python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
+          "${{ steps.extract_branch.outputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
