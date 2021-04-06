@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 from colony_client import ColonyClient
 
@@ -13,7 +14,6 @@ def parse_user_input():
     parser.add_argument("artifacts", type=str, help="A comma-separated list of artifacts per application")
 
     return parser.parse_args()
-
 
 def parse_comma_separated_string(params_string: str = None) -> dict:
     res = {}
@@ -45,13 +45,16 @@ if __name__ == "__main__":
         space=os.environ.get("COLONY_SPACE", ""),
         token=os.environ.get("COLONY_TOKEN", "")
     )
-
-    sandbox_id = client.start_sandbox(
-        args.blueprint_name,
-        args.sandbox_name,
-        args.duration,
-        inputs_dict,
-        artifacts_dict
-    )
-    
-    print(f"::set-output name=sandbox-id::{sandbox_id}")
+    try: 
+        sandbox_id = client.start_sandbox(
+            args.blueprint_name,
+            args.sandbox_name,
+            args.duration,
+            inputs_dict,
+            artifacts_dict
+        )
+    except Exception as e:
+        sys.stderr.write(f"Unable to start sandbox. Reason {e}")
+        sys.exit(1)
+        
+    sys.stdout.write(f"::set-output name=sandbox-id::{sandbox_id}")
