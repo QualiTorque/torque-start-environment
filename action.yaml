@@ -47,8 +47,6 @@ runs:
         #Run start command
         sb=$(python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
           '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}' )
-        echo "$sb"
-        echo "::set-output name=sandbox-id::$(echo $sb)"
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}

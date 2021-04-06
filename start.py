@@ -53,3 +53,5 @@ if __name__ == "__main__":
         inputs_dict,
         artifacts_dict
     )
+    
+    print(f"::set-output name=sandbox-id::{sandbox_id}")
