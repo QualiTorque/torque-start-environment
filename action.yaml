@@ -59,6 +59,9 @@ runs:
         sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
         timeout=${{ inputs.timeout }}
 
+        echo "Sandbox ID to wait: ${{ steps.start-sandbox.outputs.sandbox-id }}"
+        echo "Minutes to wait: ${{ inputs.timeout }}"
+
         if [ "$timeout" = "0" ]; then
           echo "No need to wait"
         else 
