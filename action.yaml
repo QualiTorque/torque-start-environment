@@ -15,8 +15,7 @@ inputs:
     description: 'Colony longterm token'
     required: true
   branch:
-    required: true
-    default: 'master'
+    required: false
   duration:
     required: false
     default: '120'
@@ -27,9 +26,6 @@ inputs:
     required: false
   inputs:
     required: false
-  debug:
-    required: false
-    default: 'false'
 
 outputs:
   sandbox_id:
@@ -46,11 +42,13 @@ runs:
     - id: start-sandbox
       run: |
         sb_name=${{ inputs.sandbox_name }}
-        [ -n $sb_name ] || sb_name=${{ inputs.blueprint_name }}
+        [ -n $sb_name ] || sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
+
+
 
         #Run start command
-        sb=$(${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" ${{ inputs.duration }}
-              "${{ steps.extract_branch.outputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}")
+        sb=$(python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" ${{ inputs.duration }}
+              "${{ steps.extract_branch.outputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}" )
         
         echo "::set-output name=sandbox-id::$(echo $sb)"
       env:

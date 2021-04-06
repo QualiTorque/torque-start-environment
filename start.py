@@ -53,5 +53,3 @@ if __name__ == "__main__":
         inputs_dict,
         artifacts_dict
     )
-
-    
