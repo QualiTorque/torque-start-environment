@@ -45,8 +45,8 @@ runs:
         [ -n $sb_name ] || sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
 
         #Run start command
-        sb=$(python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
-          '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}' )
+        python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
+          '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}'
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
