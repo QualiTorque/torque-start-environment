@@ -41,9 +41,13 @@ runs:
 
     - id: start-sandbox
       run: |
-        sb_name=${{ inputs.sandbox_name }}
-        [ -n $sb_name ] || sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
+        if [ -n ${{ inputs.sandbox_name }} ]; then
+          sb_name=${{ inputs.sandbox_name }}
+        else
+          sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
+        fi
 
+        echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
         echo "Sandbox name: ${sb_name}"
 
         #Run start command
