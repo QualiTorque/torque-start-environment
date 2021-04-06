@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     while (datetime.datetime.now() - start_time).seconds < timeout * 60:
         try:
+            print (f"run {sandbox_id}")
             sandbox = client.get_sandbox(sandbox_id)
         except Exception as e:
             sys.stderr.write(f"Unable to get sandbox with ID {sandbox_id}; reason: {e}")

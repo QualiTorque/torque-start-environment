@@ -34,12 +34,13 @@ class ColonyClient:
             params = {}
 
         if method == "GET":
-            request_args["params"] = params
+            request_args["params"] = params.copy()
         else:
-            request_args["json"] = params
+            request_args["json"] = params.copy()
 
         response = self.session.request(**request_args)
         if response.status_code >= 400:
+            print(response.request)
             message = ";".join([f"{err['name']}: {err['message']}" for err in response.json().get("errors", [])])
             raise Exception(message)
 
@@ -77,7 +78,7 @@ class ColonyClient:
     def get_sandbox(self, sandbox_id: str) -> dict:
         """Returns Sandbox as a json"""
         path = f"sandbox/{sandbox_id}"
-
+        
         res = self._request(path, method="GET")
 
         return res.json()
