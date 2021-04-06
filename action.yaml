@@ -44,26 +44,28 @@ runs:
         sb_name=${{ inputs.sandbox_name }}
         [ -n $sb_name ] || sb_name="${{ inputs.blueprint_name }}.${{ github.run_id }}"
 
+        echo "Sandbox name: ${sb_name}"
+
         #Run start command
-        python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
-          '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}'
+        # python3 ${{ github.action_path }}/start.py '${{ inputs.blueprint_name }}' '$sb_name' '${{ inputs.duration }}' \
+        #   '${{ steps.extract_branch.outputs.branch }}' '${{ inputs.inputs }}' '${{ inputs.artifacts }}'
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
       shell: bash
           
-    - id: wait-sandbox
-      run: |
-        sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
-        timeout=${{ inputs.timeout }}
+    # - id: wait-sandbox
+    #   run: |
+    #     sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
+    #     timeout=${{ inputs.timeout }}
 
-        echo "Sandbox ID to wait: ${{ steps.start-sandbox.outputs.sandbox-id }}"
-        echo "Minutes to wait: ${{ inputs.timeout }}"
+    #     echo "Sandbox ID to wait: ${{ steps.start-sandbox.outputs.sandbox-id }}"
+    #     echo "Minutes to wait: ${{ inputs.timeout }}"
 
-        if [ "$timeout" = "0" ]; then
-          echo "No need to wait"
-        else 
-          #Run wait command
-          python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
-        fi
-      shell: bash
+    #     if [ "$timeout" = "0" ]; then
+    #       echo "No need to wait"
+    #     else 
+    #       #Run wait command
+    #       python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
+    #     fi
+    #   shell: bash
