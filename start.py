@@ -54,7 +54,7 @@ if __name__ == "__main__":
             artifacts_dict
         )
     except Exception as e:
-        sys.stderr.write(f"Unable to start sandbox. Reason {e}")
+        print(f"::error::Unable to start sandbox. Reason {e}")
         sys.exit(1)
         
-    sys.stdout.write(f"::set-output name=sandbox-id::{sandbox_id}")
+    print(f"::set-output name=sandbox_id::{sandbox_id}")

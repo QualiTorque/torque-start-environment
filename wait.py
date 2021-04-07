@@ -58,8 +58,8 @@ if __name__ == "__main__":
 
         if status == "Active":
             print(f"Sandbox {sandbox_id} is active")
-            print(f"::set-output name=sandbox-details::{str(sandbox)}")
-            print(f"::set-output name=sandbox-shortcuts::{str(build_shortcuts_json(sandbox))}")
+            print(f"::set-output name=sandbox_details::{str(sandbox)}")
+            print(f"::set-output name=sandbox_shortcuts::{str(build_shortcuts_json(sandbox))}")
             sys.exit(0)
 
         elif status == "Launching":

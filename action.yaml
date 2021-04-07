@@ -30,12 +30,12 @@ inputs:
     required: false
 
 outputs:
-  sandbox-id:
+  sandbox_id:
     description: 'The ID of launched Colony Sandbox'
     value: ${{ steps.start-sandbox.outputs.sandbox-id }}
-  sandbox-shortcuts:
+  sandbox_shortcuts:
     description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
-  sandbox-details:
+  sandbox_details:
     description: 'Full sandbox definition in json format'
 
 runs:
@@ -63,11 +63,11 @@ runs:
           
     - id: wait-sandbox
       run: |
-        sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
+        sandbox=${{ steps.start-sandbox.outputs.sandbox_id }}
         timeout=${{ inputs.timeout }}
 
-        echo "Sandbox ID to wait: ${{ steps.start-sandbox.outputs.sandbox-id }}"
-        echo "Minutes to wait: ${{ inputs.timeout }}"
+        echo "Sandbox ID to wait: ${sandbox}"
+        echo "Minutes to wait: ${timeout}"
 
         if [ "$timeout" = "0" ]; then
           echo "No need to wait"
