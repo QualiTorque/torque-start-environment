@@ -20,11 +20,13 @@ class ColonyClient:
         self.base_api_url = f"https://cloudshellcolony.com/api/spaces/{self.space}"
 
     def _request(self, endpoint: str, method: str = 'GET', params: dict = None) -> requests.Response:
+        self._validate_creds()
         method = method.upper()
         if method not in ("GET", "PUT", "POST", "DELETE"):
             raise ValueError("Method must be in [GET, POST, PUT, DELETE]")
 
         url = f"{self.base_api_url}/{endpoint}"
+        
         request_args = {
             "method": method,
             "url": url,
@@ -33,9 +35,9 @@ class ColonyClient:
             params = {}
 
         if method == "GET":
-            request_args["params"] = params.copy()
+            request_args["params"] = params
         else:
-            request_args["json"] = params.copy()
+            request_args["json"] = params
 
         response = self.session.request(**request_args)
         if response.status_code >= 400:
@@ -43,6 +45,10 @@ class ColonyClient:
             raise Exception(message)
 
         return response
+
+    def _validate_creds(self):
+        if not self.space or not self.token:
+            raise ValueError("Space or token were not provided")
 
     def start_sandbox(
         self,
@@ -75,7 +81,8 @@ class ColonyClient:
 
     def get_sandbox(self, sandbox_id: str) -> dict:
         """Returns Sandbox as a json"""
-        path = f"sandbox/{sandbox_id}"        
+        path = f"sandbox/{sandbox_id}"
+
         res = self._request(path, method="GET")
 
         return res.json()
@@ -85,4 +92,3 @@ class ColonyClient:
         path = f"sandbox/{sandbox_id}"
 
         res = self._request(path, method="DELETE")
-
