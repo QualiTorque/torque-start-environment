@@ -20,6 +20,10 @@ def build_shortcuts_json(sandbox_spec):
     
     return res
 
+def _simplify_state(sandbox_progress):
+    return {step: description["status"] for step, description in sandbox_progress.items()}
+
+
 if __name__ == "__main__":
     args = parse_user_input()
 
@@ -31,15 +35,15 @@ if __name__ == "__main__":
     timeout = args.timeout
 
     if not sandbox_id:
-        sys.stderr.write("Sandbox Id cannot be empty")
+        print("::error::Sandbox Id cannot be empty")
         sys.exit(1)
 
     if timeout < 0:
-        sys.stderr.write("Timeout must be positive")
+        print("::error::Timeout must be positive")
         sys.exit(1)
 
     start_time = datetime.datetime.now()
-    sys.stdout.write(f"Waiting for the Sandbox {sandbox_id} to start...\n")
+    print(f"::debug::Waiting for the Sandbox {sandbox_id} to start...")
 
     sandbox_state = {}
 
@@ -47,28 +51,28 @@ if __name__ == "__main__":
         try:
             sandbox = client.get_sandbox(sandbox_id)
         except Exception as e:
-            sys.stderr.write(f"Unable to get sandbox with ID {sandbox_id}; reason: {e}")
+            print(f"::error::Unable to get sandbox with ID {sandbox_id}; reason: {e}")
             sys.exit(1)
 
         status = sandbox["sandbox_status"]
 
         if status == "Active":
-            sys.stdout.write(f"Sandbox {sandbox_id} is active\n")
-            sys.stdout.write(f"::set-output name=sandbox-details::{str(sandbox)}")
-            sys.stdout.write(f"::set-output name=sandbox-shortcuts::{str(build_shortcuts_json(sandbox))}")
+            print(f"Sandbox {sandbox_id} is active")
+            print(f"::set-output name=sandbox-details::{str(sandbox)}")
+            print(f"::set-output name=sandbox-shortcuts::{str(build_shortcuts_json(sandbox))}")
             sys.exit(0)
 
         elif status == "Launching":
             progress = sandbox["launching_progress"]
-
-            if progress != sandbox_state:
-                sandbox_state.update(progress)
-                sys.stdout.write(f"::debug::{str(sandbox_state)}")
+            simple_state = _simplify_state(progress)
+            if simple_state != sandbox_state:
+                sandbox_state.update(simple_state)
+                print(f"::debug::{str(sandbox_state)}")
             time.sleep(10)
 
         else:
-            sys.stderr.write(f"Launching failed. The state of Sandbox {sandbox_id} is: {status}\n")
+            print(f"::error::Launching failed. The state of Sandbox {sandbox_id} is: {status}")
             sys.exit(1)
 
-    sys.stderr.write(f"Sandbox {sandbox_id} was not active after the provided timeout of {timeout} minutes\n")
+    print(f"::error::Sandbox {sandbox_id} was not active after the provided timeout of {timeout} minutes")
     sys.exit(1)
