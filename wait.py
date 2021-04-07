@@ -31,7 +31,7 @@ def _compose_sb_url(account_name, sandbox_id, space):
 if __name__ == "__main__":
     args = parse_user_input()
 
-    space = os.environ.get("COLONY_SPACE", ""),
+    space = os.environ.get("COLONY_SPACE", "")
     token = os.environ.get("COLONY_TOKEN", "")
     account = os.environ.get("COLONY_ACCOUNT", "")
 

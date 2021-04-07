@@ -60,6 +60,7 @@ runs:
 
         echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
         echo "Sandbox name: ${sb_name}"
+        echo "Space: ${{ inputs.space }}"
 
         #Run start command
         python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
