@@ -23,14 +23,19 @@ def build_shortcuts_json(sandbox_spec):
 def _simplify_state(sandbox_progress):
     return {step: description["status"] for step, description in sandbox_progress.items()}
 
+def _compose_sb_url(account_name, sandbox_id, space):
+    return f"https://{account}.cloudshellcolony.com/{space}/sandboxes/{sandbox_id}"
+
+
 
 if __name__ == "__main__":
     args = parse_user_input()
 
-    client = ColonyClient(
-        space=os.environ.get("COLONY_SPACE", ""),
-        token=os.environ.get("COLONY_TOKEN", "")
-    )
+    space = os.environ.get("COLONY_SPACE", ""),
+    token = os.environ.get("COLONY_TOKEN", "")
+    account = os.environ.get("COLONY_ACCOUNT", "")
+
+    client = ColonyClient(space, token)
     sandbox_id = args.sandbox_id
     timeout = args.timeout
 
@@ -60,6 +65,10 @@ if __name__ == "__main__":
             print(f"Sandbox {sandbox_id} is active")
             print(f"::set-output name=sandbox_details::{str(sandbox)}")
             print(f"::set-output name=sandbox_shortcuts::{str(build_shortcuts_json(sandbox))}")
+            if account:
+                url = _compose_sb_url(account, sandbox_id, space)
+                print(f"Sandbox URL: {url}")
+
             sys.exit(0)
 
         elif status == "Launching":

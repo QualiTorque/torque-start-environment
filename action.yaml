@@ -9,34 +9,42 @@ inputs:
     description: 'Name of Blueprint'
     required: true
   sandbox_name:
-    description: 'Colony Sandbox Name'
+    description: 'Provide a name for the Sandbox'
     required: false
   colony_token:
-    description: 'Colony longterm token'
+    description: 'Colony long term token'
     required: true
   colony_account:
     required: false
+    description: 'Your Colony account name. The account name is equal to your subdomain in the Colony URL'
   branch:
+    description: 'Run the Blueprint version from a remote Git branch'
     required: false
   duration:
+    description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
     required: false
     default: '120'
   timeout:
+    description: 'Set the timeout in minutes to wait for the sandbox to become active'
     required: false
     default: '0'
   artifacts:
     required: false
+    description: 'A comma-separated list of artifacts per application. Example: appName1=path1, appName2=path2'
   inputs:
     required: false
+    description: 'A comma-separated list of key=value pairs. For example: key1=value1, key2=value2'
 
 outputs:
   sandbox_id:
     description: 'The ID of launched Colony Sandbox'
-    value: ${{ steps.start-sandbox.outputs.sandbox-id }}
+    value: ${{ steps.start-sandbox.outputs.sandbox_id }}
   sandbox_shortcuts:
     description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
+    value: ${{ steps.wait-sandbox.outputs.sandbox_shortcuts }}
   sandbox_details:
     description: 'Full sandbox definition in json format'
+    value: ${{ steps.wait-sandbox.outputs.sandbox_details }}
 
 runs:
   using: "composite"
@@ -55,7 +63,7 @@ runs:
 
         #Run start command
         python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
-          "${{ steps.extract_branch.outputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
+          "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
@@ -79,3 +87,4 @@ runs:
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
+        COLONY_ACCOUNT: ${{ inputs.colony_account }}

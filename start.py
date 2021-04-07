@@ -51,7 +51,8 @@ if __name__ == "__main__":
             args.sandbox_name,
             args.duration,
             inputs_dict,
-            artifacts_dict
+            artifacts_dict,
+            args.branch
         )
     except Exception as e:
         print(f"::error::Unable to start sandbox. Reason {e}")
