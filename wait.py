@@ -41,6 +41,8 @@ if __name__ == "__main__":
     start_time = datetime.datetime.now()
     sys.stdout.write(f"Waiting for the Sandbox {sandbox_id} to start...\n")
 
+    sandbox_state = {}
+
     while (datetime.datetime.now() - start_time).seconds < timeout * 60:
         try:
             sandbox = client.get_sandbox(sandbox_id)
@@ -58,9 +60,11 @@ if __name__ == "__main__":
 
         elif status == "Launching":
             progress = sandbox["launching_progress"]
-            for check_points, properties in progress.items():
-                sys.stdout.write(f"{check_points}: {properties['status']}\n")
-            time.sleep(30)
+
+            if progress != sandbox_state:
+                sandbox_state.update(progress)
+                sys.stdout.write(f"::debug::{str(sandbox_state)}")
+            time.sleep(10)
 
         else:
             sys.stderr.write(f"Launching failed. The state of Sandbox {sandbox_id} is: {status}\n")

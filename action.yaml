@@ -63,8 +63,6 @@ runs:
           
     - id: wait-sandbox
       run: |
-        # wait some time before calling colony
-        sleep 5
         sandbox=${{ steps.start-sandbox.outputs.sandbox-id }}
         timeout=${{ inputs.timeout }}
 
