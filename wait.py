@@ -55,6 +55,12 @@ if __name__ == "__main__":
             sys.exit(1)
 
         status = sandbox["sandbox_status"]
+        progress = sandbox["launching_progress"]
+
+        simple_state = _simplify_state(progress)
+        if simple_state != sandbox_state:
+            sandbox_state.update(simple_state)
+            print(f"Current state: {str(sandbox_state)}")
 
         if status == "Active":
             print(f"\u001b[32;1mSandbox {sandbox_id} is active\u001b[0m")
@@ -63,11 +69,6 @@ if __name__ == "__main__":
             sys.exit(0)
 
         elif status == "Launching":
-            progress = sandbox["launching_progress"]
-            simple_state = _simplify_state(progress)
-            if simple_state != sandbox_state:
-                sandbox_state.update(simple_state)
-                print(f"Current state: {str(sandbox_state)}")
             time.sleep(10)
 
         else:
