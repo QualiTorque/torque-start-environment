@@ -65,10 +65,6 @@ runs:
             for chunk in r.iter_content(chunk_size=8192):
               print("Downloading")
               f.write(chunk)
-        
-#        for i in range(0, 5):
-#          print(f"Hey {i}")
-#          time.sleep(10)
         print("Done")
       shell: python
 #     - id: start-sandbox
