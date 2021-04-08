@@ -54,6 +54,7 @@ runs:
       run: |
         import time
         import requests
+        import random
         
         print("Trying printing from python directly")
         
@@ -63,7 +64,9 @@ runs:
           r.raise_for_status()
           with open('tmp.iso', 'wb') as f:
             for chunk in r.iter_content(chunk_size=1024):
-              print("Downloading")
+              a = random.randint(1, 30))
+              if a == 27:
+                print("Downloading")
               f.write(chunk)
         print("Done")
       shell: python
