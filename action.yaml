@@ -49,18 +49,18 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: test-step
-      name: Test Python print
-      run: |
-        import time
+#     - id: test-step
+#       name: Test Python print
+#       run: |
+#         import time
         
-        print("Starting the flow")
-        for i in range(0,10):
-          print(f"Hey, {i}", flush=True)
-          time.sleep(5)
-        print("Done")
+#         print("Starting the flow")
+#         for i in range(0,10):
+#           print(f"Hey, {i}", flush=True)
+#           time.sleep(5)
+#         print("Done")
       
-      shell: python
+#       shell: python
 #         import time
 #         import requests
 #         import random
@@ -79,42 +79,42 @@ runs:
 #               f.write(chunk)
 #         print("Done")
       
-#     - id: start-sandbox
-#       run: |
-#         if [ -n "${{ inputs.sandbox_name }}" ]; then
-#           sb_name="${{ inputs.sandbox_name }}"
-#         else
-#           sb_name="${{ inputs.blueprint_name }}.${{ github.run_number }}"
-#         fi
+    - id: start-sandbox
+      run: |
+        if [ -n "${{ inputs.sandbox_name }}" ]; then
+          sb_name="${{ inputs.sandbox_name }}"
+        else
+          sb_name="${{ inputs.blueprint_name }}.${{ github.run_number }}"
+        fi
 
-#         echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
-#         echo "Sandbox name: ${sb_name}"
-#         echo "Space: ${{ inputs.space }}"
+        echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
+        echo "Sandbox name: ${sb_name}"
+        echo "Space: ${{ inputs.space }}"
 
-#         #Run start command
-#         python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
-#           "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
-#       env:
-#         COLONY_SPACE: ${{ inputs.space }}
-#         COLONY_TOKEN: ${{ inputs.colony_token }}
-#         COLONY_ACCOUNT: ${{ inputs.colony_account }}
-#       shell: bash
+        #Run start command
+        python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
+          "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
+      env:
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
+        COLONY_ACCOUNT: ${{ inputs.colony_account }}
+      shell: bash
           
-#     - id: wait-sandbox
-#       run: |
-#         sandbox=${{ steps.start-sandbox.outputs.sandbox_id }}
-#         timeout=${{ inputs.timeout }}
+    - id: wait-sandbox
+      run: |
+        sandbox=${{ steps.start-sandbox.outputs.sandbox_id }}
+        timeout=${{ inputs.timeout }}
 
-#         echo "Sandbox ID to wait: ${sandbox}"
-#         echo "Minutes to wait: ${timeout}"
+        echo "Sandbox ID to wait: ${sandbox}"
+        echo "Minutes to wait: ${timeout}"
 
-#         if [ "$timeout" = "0" ]; then
-#           echo "No need to wait"
-#         else 
-#           #Run wait command
-#           python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
-#         fi
-#       shell: bash
-#       env:
-#         COLONY_SPACE: ${{ inputs.space }}
-#         COLONY_TOKEN: ${{ inputs.colony_token }}
+        if [ "$timeout" = "0" ]; then
+          echo "No need to wait"
+        else 
+          #Run wait command
+          python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
+        fi
+      shell: bash
+      env:
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
