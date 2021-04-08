@@ -57,8 +57,7 @@ runs:
         print("Trying printing from python directly")
         time.sleep(10)
         print("Done")
-      
-    
+      shell: python
 #     - id: start-sandbox
 #       run: |
 #         if [ -n "${{ inputs.sandbox_name }}" ]; then
