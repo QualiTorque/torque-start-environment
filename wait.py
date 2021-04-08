@@ -43,7 +43,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     start_time = datetime.datetime.now()
-    print(f"Waiting for the Sandbox {sandbox_id} to start...")
+    print(f"Waiting for the Sandbox {sandbox_id} to start...", flush=True)
 
     sandbox_state = {}
 
