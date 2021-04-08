@@ -64,7 +64,7 @@ runs:
           r.raise_for_status()
           with open('tmp.iso', 'wb') as f:
             for chunk in r.iter_content(chunk_size=1024):
-              a = random.randint(1, 30))
+              a = random.randint(1, 30)
               if a == 27:
                 print("Downloading")
               f.write(chunk)
