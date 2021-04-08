@@ -68,6 +68,7 @@ runs:
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
+        COLONY_ACCOUNT: ${{ inputs.colony_account }}
       shell: bash
           
     - id: wait-sandbox
@@ -88,4 +89,3 @@ runs:
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
-        COLONY_ACCOUNT: ${{ inputs.colony_account }}

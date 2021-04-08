@@ -35,16 +35,22 @@ def parse_comma_separated_string(params_string: str = None) -> dict:
 
     return res
 
+def _compose_sb_url(account_name, sandbox_id, space):
+    return f"https://{account}.cloudshellcolony.com/{space}/sandboxes/{sandbox_id}"
+
+
 if __name__ == "__main__":
     args = parse_user_input()
 
     inputs_dict = parse_comma_separated_string(args.inputs)
     artifacts_dict = parse_comma_separated_string(args.artifacts)
 
-    client = ColonyClient(
-        space=os.environ.get("COLONY_SPACE", ""),
-        token=os.environ.get("COLONY_TOKEN", "")
-    )
+    space = os.environ.get("COLONY_SPACE", "")
+    token = os.environ.get("COLONY_TOKEN", "")
+    account = os.environ.get("COLONY_ACCOUNT", "")
+
+    client = ColonyClient(space, token)
+
     try: 
         sandbox_id = client.start_sandbox(
             args.blueprint_name,
@@ -59,4 +65,9 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\u001b[32;1mSandbox {sandbox_id} has started\u001b[0m")
+
+    if account:
+        url = _compose_sb_url(account, sandbox_id, space)
+        print(f"Sandbox URL: {url}")
+
     print(f"::set-output name=sandbox_id::{sandbox_id}")
