@@ -43,7 +43,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     start_time = datetime.datetime.now()
-    print(f"Waiting for the Sandbox {sandbox_id} to start...")
+    print(f"Waiting for the Sandbox {sandbox_id} to start...", flush=True)
 
     sandbox_state = {}
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         simple_state = _simplify_state(progress)
         if simple_state != sandbox_state:
             sandbox_state.update(simple_state)
-            print(f"Current state: {str(sandbox_state)}")
+            print(f"Current state: {str(sandbox_state)}", flush=True)
 
         if status == "Active":
             print(f"\u001b[32;1mSandbox {sandbox_id} is active\u001b[0m")

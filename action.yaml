@@ -49,7 +49,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    
     - id: start-sandbox
       run: |
         if [ -n "${{ inputs.sandbox_name }}" ]; then
