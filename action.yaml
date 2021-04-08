@@ -53,23 +53,32 @@ runs:
       name: Test Python print
       run: |
         import time
-        import requests
-        import random
         
-        print("Trying printing from python directly")
-        
-        url = "https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/armv7/alpine-rpi-3.13.4-armv7.tar.gz"
-        
-        with requests.get(url, stream=True) as r:
-          r.raise_for_status()
-          with open('tmp.iso', 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024):
-              a = random.randint(1, 30)
-              if a == 27:
-                print("Downloading")
-              f.write(chunk)
+        print("Starting the flow")
+        for i in range(0,5):
+          print(f"Hey, {i}", flush=True)
+          time.sleep(5)
         print("Done")
+      
       shell: python
+#         import time
+#         import requests
+#         import random
+        
+#         print("Trying printing from python directly")
+        
+#         url = "https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/armv7/alpine-rpi-3.13.4-armv7.tar.gz"
+        
+#         with requests.get(url, stream=True) as r:
+#           r.raise_for_status()
+#           with open('tmp.iso', 'wb') as f:
+#             for chunk in r.iter_content(chunk_size=1024):
+#               a = random.randint(1, 30)
+#               if a == 27:
+#                 print("Downloading")
+#               f.write(chunk)
+#         print("Done")
+      
 #     - id: start-sandbox
 #       run: |
 #         if [ -n "${{ inputs.sandbox_name }}" ]; then
