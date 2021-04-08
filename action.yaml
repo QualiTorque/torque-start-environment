@@ -56,9 +56,18 @@ runs:
         
         print("Trying printing from python directly")
         
-        for i in range(0, 5):
-          print(f"Hey {i}")
-          time.sleep(10)
+        url = "https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/armv7/alpine-rpi-3.13.4-armv7.tar.gz"
+        
+        with requests.get(url, stream=True) as r:
+          r.raise_for_status()
+          with open('tmp.iso', 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+              print("Downloading")
+              f.write(chunk)
+        
+#        for i in range(0, 5):
+#          print(f"Hey {i}")
+#          time.sleep(10)
         print("Done")
       shell: python
 #     - id: start-sandbox
