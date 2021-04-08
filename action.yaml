@@ -53,6 +53,7 @@ runs:
       name: Test Python print
       run: |
         import time
+        import requests
         
         print("Trying printing from python directly")
         
