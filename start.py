@@ -64,10 +64,10 @@ if __name__ == "__main__":
         print(f"::error::Unable to start sandbox. Reason {e}")
         sys.exit(1)
 
-    print(f"\u001b[32;1mSandbox {sandbox_id} has started\u001b[0m")
+    print(f"\u001b[32;1mSandbox {sandbox_id} has started\u001b[0m", flush=True)
 
     if account:
         url = _compose_sb_url(account, sandbox_id, space)
-        print(f"Sandbox URL: {url}")
+        print(f"Sandbox URL: {url}", flush=True)
 
     print(f"::set-output name=sandbox_id::{sandbox_id}")
