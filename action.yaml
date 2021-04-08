@@ -55,7 +55,10 @@ runs:
         import time
         
         print("Trying printing from python directly")
-        time.sleep(10)
+        
+        for i in range(0, 5):
+          print(f"Hey {i}")
+          time.sleep(10)
         print("Done")
       shell: python
 #     - id: start-sandbox
