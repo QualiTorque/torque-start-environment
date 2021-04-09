@@ -54,7 +54,7 @@ runs:
         if [ -n "${{ inputs.sandbox_name }}" ]; then
           sb_name="${{ inputs.sandbox_name }}"
         else
-          sb_name="${{ inputs.blueprint_name }}.${{ github.run_number }}"
+          sb_name="${{ inputs.blueprint_name }}-build-${{ github.run_number }}"
         fi
 
         echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
