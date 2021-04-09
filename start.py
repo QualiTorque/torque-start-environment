@@ -1,7 +1,7 @@
 import os
 import sys
 import argparse
-from colony_client import ColonyClient
+from common import ColonyClient, LoggerService
 
 def parse_user_input():
     parser = argparse.ArgumentParser(prog='Colony Sandbox Start')
@@ -61,13 +61,11 @@ if __name__ == "__main__":
             args.branch
         )
     except Exception as e:
-        print(f"::error::Unable to start sandbox. Reason {e}")
-        sys.exit(1)
-
-    print(f"\u001b[32;1mSandbox {sandbox_id} has started\u001b[0m", flush=True)
+        LoggerService.error(f"Unable to start sandbox. Reason {e}")
 
     if account:
         url = _compose_sb_url(account, sandbox_id, space)
-        print(f"Sandbox URL: {url}", flush=True)
+        LoggerService.message(f"Sandbox URL: {url}")
 
-    print(f"::set-output name=sandbox_id::{sandbox_id}")
+    LoggerService.set_output("sandbox_id", sandbox_id)
+    LoggerService.success(f"Sandbox {sandbox_id} has started")

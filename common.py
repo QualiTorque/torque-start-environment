@@ -92,3 +92,34 @@ class ColonyClient:
         path = f"sandbox/{sandbox_id}"
 
         res = self._request(path, method="DELETE")
+
+
+class LoggerService:
+    @staticmethod
+    def flush():
+        sys.stdout.write()
+        sys.stdout.flush()
+
+    @staticmethod
+    def message(message):
+        sys.stdout.write(message)
+        LoggerService.flush()
+    
+    @staticmethod
+    def error(message, exit=True):
+        sys.stdout.write(f"::error::{message}")
+        LoggerService.flush()
+        if exit:
+            sys.exit(1)
+
+    @staticmethod
+    def success(message, exit=True):
+        sys.stdout.write(f"\u001b[32;1m{message}\u001b[0m")
+        LoggerService.flush()
+        if exit:
+            sys.exit(0)
+    
+    @staticmethod
+    def set_output(variable, message):
+        sys.stdout.write(f"::set-output name={variable}::{message}")
+        LoggerService.flush()

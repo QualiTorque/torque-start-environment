@@ -3,7 +3,7 @@ import sys
 import argparse
 import datetime
 import time
-from colony_client import ColonyClient
+from common import ColonyClient, LoggerService
 
 def parse_user_input():
     parser = argparse.ArgumentParser(prog='Colony Sandbox Start')
@@ -35,15 +35,13 @@ if __name__ == "__main__":
     timeout = args.timeout
 
     if not sandbox_id:
-        print("::error::Sandbox Id cannot be empty")
-        sys.exit(1)
+        LoggerService.error("Sandbox Id cannot be empty")
 
     if timeout < 0:
-        print("::error::Timeout must be positive")
-        sys.exit(1)
+        LoggerService.error("Timeout must be positive")
 
     start_time = datetime.datetime.now()
-    print(f"Waiting for the Sandbox {sandbox_id} to start...", flush=True)
+    LoggerService.message(f"Waiting for the Sandbox {sandbox_id} to start...")
 
     sandbox_state = {}
 
@@ -51,8 +49,7 @@ if __name__ == "__main__":
         try:
             sandbox = client.get_sandbox(sandbox_id)
         except Exception as e:
-            print(f"::error::Unable to get sandbox with ID {sandbox_id}; reason: {e}")
-            sys.exit(1)
+            LoggerService.error(f"Unable to get sandbox with ID {sandbox_id}; reason: {e}")
 
         status = sandbox["sandbox_status"]
         progress = sandbox["launching_progress"]
@@ -60,20 +57,17 @@ if __name__ == "__main__":
         simple_state = _simplify_state(progress)
         if simple_state != sandbox_state:
             sandbox_state.update(simple_state)
-            print(f"Current state: {str(sandbox_state)}", flush=True)
+            LoggerService.message(f"Current state: {str(sandbox_state)}")
 
         if status == "Active":
-            print(f"\u001b[32;1mSandbox {sandbox_id} is active\u001b[0m")
-            print(f"::set-output name=sandbox_details::{str(sandbox)}")
-            print(f"::set-output name=sandbox_shortcuts::{str(build_shortcuts_json(sandbox))}")
-            sys.exit(0)
+            LoggerService.set_output("sandbox_details", str(sandbox))
+            LoggerService.set_output("sandbox_shortcuts", str(build_shortcuts_json(sandbox)))
+            LoggerService.success(f"Sandbox {sandbox_id} is active!")
 
         elif status == "Launching":
             time.sleep(10)
 
         else:
-            print(f"::error::Launching failed. The state of Sandbox {sandbox_id} is: {status}")
-            sys.exit(1)
+            LoggerService.error(f"Launching failed. The state of Sandbox {sandbox_id} is: {status}")
 
-    print(f"::error::Sandbox {sandbox_id} was not active after the provided timeout of {timeout} minutes")
-    sys.exit(1)
+    LoggerService.error(f"Sandbox {sandbox_id} was not active after the provided timeout of {timeout} minutes")
