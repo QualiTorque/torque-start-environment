@@ -97,7 +97,7 @@ class ColonyClient:
 class LoggerService:
     @staticmethod
     def flush():
-        sys.stdout.write()
+        sys.stdout.write("\n")
         sys.stdout.flush()
 
     @staticmethod
