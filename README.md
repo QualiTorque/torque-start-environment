@@ -63,6 +63,8 @@ To use this GitHub Action you need to have an account in CloudShell Colony and A
 
 ## Examples
 
+### CI
+
 The following example demonstrates how this action could be used in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside Colony Sandbox
 
 ```yaml
@@ -124,4 +126,81 @@ jobs:
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
         colony_token: ${{ secrets.COLONY_TOKEN }} 
 ```
+### Blueprints validation
 
+If you work on Colony Blueprints repository you can extend the validation capabilities of your workflow by using a combination of [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. So that, you can ensure that not only is your blueprint valid but also the working sandbox could be launched using it.
+
+Please note that the example also shows how you can force the sandbox to terminate if it was not ready within a timeout or was deployed with errors.
+
+```yaml
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Colony validate blueprints
+      uses: QualiSystemsLab/colony-validate-bp-action@v0.0.1
+      with:
+        space: Demo
+        files_list: blueprints/empty-bp-empty-app.yaml
+        colony_token: ${{ secrets.COLONY_TOKEN }}
+
+  some-parallel-job:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Sleep for 100s
+      uses: juliangruber/sleep-action@v1
+      with:
+        time: 100s
+
+  start-sb:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Start sandbox
+      id: start-sandbox
+      uses: QualiSystemsLab/colony-start-sb-action@v0.0.1
+      with:
+        space: Demo
+        blueprint_name: empty-bp-empty-app
+        colony_token: ${{ secrets.COLONY_TOKEN }}
+        branch: master
+        duration: 30
+        timeout: 10
+    - name: End sandbox on failure
+      if: failure() && steps.start-sandbox.outputs.sandbox_id != ''
+      uses: QualiSystemsLab/colony-end-sb-action@v0.0.1
+      with:
+        space: Demo
+        sandbox_id: ${{steps.start-sandbox.outputs.sandbox_id}}
+        colony_token: ${{ secrets.COLONY_TOKEN }}
+
+    outputs:
+      sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
+
+  finish-all:
+    needs: [start-sb, some-parallel-job]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Stop sandbox
+      uses: QualiSystemsLab/colony-end-sb-action@v0.0.1
+      with:
+        space: Demo
+        sandbox_id: ${{needs.start-sb.outputs.sandbox_id}}
+        colony_token: ${{ secrets.COLONY_TOKEN }}
+```
