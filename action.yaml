@@ -4,66 +4,87 @@ author: 'Quali'
 inputs:
   space:
     description: 'Colony space'
-    required: false
+    required: true
   blueprint_name:
     description: 'Name of Blueprint'
-    required: false
+    required: true
   sandbox_name:
-    description: 'Colony Sandbox Name'
+    description: 'Provide a name for the Sandbox'
     required: false
   colony_token:
-    description: 'Colony longterm token'
+    description: 'Colony long term token'
     required: true
+  colony_account:
+    required: false
+    description: 'Your Colony account name. The account name is equal to your subdomain in the Colony URL'
+  branch:
+    description: 'Run the Blueprint version from a remote Git branch'
+    required: false
+  duration:
+    description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
+    required: false
+    default: '120'
+  timeout:
+    description: 'Set the timeout in minutes to wait for the sandbox to become active'
+    required: false
+    default: '0'
+  artifacts:
+    required: false
+    description: 'A comma-separated list of artifacts per application. Example: appName1=path1, appName2=path2'
+  inputs:
+    required: false
+    description: 'A comma-separated list of key=value pairs. For example: key1=value1, key2=value2'
 
 outputs:
   sandbox_id:
     description: 'The ID of launched Colony Sandbox'
-    value: ${{ steps.start-sandbox.outputs.sandbox-id }}
+    value: ${{ steps.start-sandbox.outputs.sandbox_id }}
+  sandbox_shortcuts:
+    description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
+    value: ${{ steps.wait-sandbox.outputs.sandbox_shortcuts }}
+  sandbox_details:
+    description: 'Full sandbox definition in json format'
+    value: ${{ steps.wait-sandbox.outputs.sandbox_details }}
 
 runs:
   using: "composite"
   steps:
     - id: start-sandbox
-      # run: .github/actions/start-sandbox/start-sb.sh
-      # run: ${{ github.action_path }}/start-sb.sh
       run: |
-        PAYLOAD=(
-          "{
-            'sandbox_name':'${{ inputs.sandbox_name }}',
-            'blueprint_name':'${{ inputs.blueprint_name }}',
-            'automation': true
-          }"
-        )
-
-        sb=`curl --silent -X POST "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox" \
-               -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}" \
-               -H "Content-Type:  application/json" -d "$PAYLOAD"` || exit 1
-        
-        sb=`echo $sb | sed 's/.*:"//' | sed 's/".*//'`
-        echo "Sandbox with id $sb has been started"
-        
-        echo "::set-output name=sandbox-id::$(echo $sb)"
-      shell: bash
-    - id: wait-sandbox
-      # run: .github/actions/start-sandbox/wait-sb.sh
-      # run: ${{ github.action_path }}/wait-sb.sh
-      run: |
-        echo "Waiting for sandbox ${{ inputs.sandbox_name }}"
-        timeout=`date --date="15 minutes" +%s`
-        status=''
-        while [[ $(date +%s) -le $timeout && $status != "Active" ]]; do
-          echo "****"
-          sleep 25
-          details=`curl --silent \
-            -X GET "https://cloudshellcolony.com/api/spaces/${{ inputs.space }}/sandbox/${SANDBOX_ID}" \
-            -H "accept: text/plain" -H "Authorization: bearer ${{ inputs.colony_token }}"`
-          status=`echo $details | sed  "s/.*\"sandbox_status\":\"//" | sed "s/\".*//"`
-          echo "Status is $status"
-        done
-        if [[ $status != "Active" ]]; then
-          echo "Timeout was reached or Sandbox is active with errors"
-          exit 1
+        if [ -n "${{ inputs.sandbox_name }}" ]; then
+          sb_name="${{ inputs.sandbox_name }}"
+        else
+          sb_name="${{ inputs.blueprint_name }}-build-${{ github.run_number }}"
         fi
+
+        echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
+        echo "Sandbox name: ${sb_name}"
+        echo "Space: ${{ inputs.space }}"
+
+        #Run start command
+        python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
+          "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
       env:
-        SANDBOX_ID: ${{ steps.start-sandbox.outputs.sandbox-id }}
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
+        COLONY_ACCOUNT: ${{ inputs.colony_account }}
       shell: bash
+          
+    - id: wait-sandbox
+      run: |
+        sandbox=${{ steps.start-sandbox.outputs.sandbox_id }}
+        timeout=${{ inputs.timeout }}
+
+        echo "Sandbox ID to wait: ${sandbox}"
+        echo "Minutes to wait: ${timeout}"
+
+        if [ "$timeout" = "0" ]; then
+          echo "No need to wait"
+        else 
+          #Run wait command
+          python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
+        fi
+      shell: bash
+      env:
+        COLONY_SPACE: ${{ inputs.space }}
+        COLONY_TOKEN: ${{ inputs.colony_token }}
