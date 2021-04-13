@@ -116,7 +116,7 @@ jobs:
         shortcuts=${{ steps.start-sandbox.sandbox_shortcuts }}
         readarray -t shortcuts <<< "$(jq '. | .flask-app[]' <<< '${{ steps.start-sandbox.sandbox_shortcuts }}')"
         for shortcut in ${shortcuts[@]}; do
-            "Do something with this ${shortcut}."
+            echo "Do something with this ${shortcut}."
         done
 
     - name: Stop sandbox
