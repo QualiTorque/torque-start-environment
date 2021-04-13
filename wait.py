@@ -3,6 +3,7 @@ import sys
 import argparse
 import datetime
 import time
+import json
 from common import ColonyClient, LoggerService
 
 def parse_user_input():
@@ -60,8 +61,8 @@ if __name__ == "__main__":
             LoggerService.message(f"Current state: {str(sandbox_state)}")
 
         if status == "Active":
-            LoggerService.set_output("sandbox_details", str(sandbox))
-            LoggerService.set_output("sandbox_shortcuts", str(build_shortcuts_json(sandbox)))
+            LoggerService.set_output("sandbox_details", json.dumps(sandbox))
+            LoggerService.set_output("sandbox_shortcuts", json.dumps(build_shortcuts_json(sandbox)))
             LoggerService.success(f"Sandbox {sandbox_id} is active!")
 
         elif status == "Launching":
