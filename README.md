@@ -128,7 +128,7 @@ jobs:
 ```
 ### Blueprints validation
 
-If you work on Colony Blueprints repository you can extend the validation capabilities of your workflow by using a combination of [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. So that, you can ensure that not only is your blueprint valid but also the working sandbox could be launched using it.
+If you work on Colony Blueprints repository you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. So that, you can ensure that not only is your blueprint syntax valid but also a working sandbox could be launched using it.
 
 Please note that the example also shows how you can force the sandbox to terminate if it was not ready within a timeout or was deployed with errors.
 
