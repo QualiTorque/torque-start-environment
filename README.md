@@ -16,6 +16,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and A
 
     # Provide the long term Colony token which could be generated
     # on the 'Integrations' page under the Colony's Settings page
+    # or generate a new one with the REST API
     colony_token: ${{ secrets.COLONY_TOKEN }}
 
     # Provide the name of the blueprint you would like to use as a source for the sandbox.
