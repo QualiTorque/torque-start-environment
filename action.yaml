@@ -1,31 +1,31 @@
 name: 'Start Colony Sandbox'
-description: 'Starts a sandbox in Colony and returns its ID'
+description: 'Starts a sandbox in CloudShell Colony and returns its details'
 author: 'Quali'
 inputs:
   space:
-    description: 'Colony space'
+    description: 'The Colony space to start the sandbox in'
     required: true
   blueprint_name:
-    description: 'Name of Blueprint'
+    description: 'The name of the Blueprint to use'
     required: true
   sandbox_name:
     description: 'Provide a name for the Sandbox'
     required: false
   colony_token:
-    description: 'Colony long term token'
+    description: 'A Colony longterm token'
     required: true
   colony_account:
     required: false
-    description: 'Your Colony account name. The account name is equal to your subdomain in the Colony URL'
+    description: 'Your Colony account name. The account name is equal to your subdomain in the Colony URL.'
   branch:
-    description: 'Run the Blueprint version from a remote Git branch'
+    description: 'Use the Blueprint version from a remote Git branch'
     required: false
   duration:
     description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
     required: false
     default: '120'
   timeout:
-    description: 'Set the timeout in minutes to wait for the sandbox to become active'
+    description: 'Set the time (minutes) to wait for the sandbox to become active. When setting to 0 the action will end with just the sandbox ID output.'
     required: false
     default: '0'
   artifacts:
@@ -43,7 +43,7 @@ outputs:
     description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
     value: ${{ steps.wait-sandbox.outputs.sandbox_shortcuts }}
   sandbox_details:
-    description: 'Full sandbox definition in json format'
+    description: 'The Full sandbox details in a json format'
     value: ${{ steps.wait-sandbox.outputs.sandbox_details }}
 
 runs:
