@@ -88,3 +88,7 @@ runs:
       env:
         COLONY_SPACE: ${{ inputs.space }}
         COLONY_TOKEN: ${{ inputs.colony_token }}
+        
+branding:
+  icon: 'check-square'  
+  color: 'blue'
