@@ -90,5 +90,5 @@ runs:
         COLONY_TOKEN: ${{ inputs.colony_token }}
         
 branding:
-  icon: 'check-square'  
+  icon: 'play-circle'  
   color: 'blue'
