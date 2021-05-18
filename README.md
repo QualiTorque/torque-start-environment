@@ -65,7 +65,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and a
 
 ### CI
 
-The following example demonstrates how to use this action in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside Colony sandbox:
+The following example demonstrates how to use this action in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside a Colony sandbox:
 
 ```yaml
 name: CI
