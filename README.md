@@ -4,7 +4,7 @@ This action integrates CloudShell Colony into your CI/CD pipeline.
 
 You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action)).
 
-To use this GitHub Action you need to have an account in CloudShell Colony and API token.
+To use this GitHub Action you need to have an account in CloudShell Colony and an API token.
 
 ## Usage
 
@@ -14,47 +14,46 @@ To use this GitHub Action you need to have an account in CloudShell Colony and A
     # The name of the Colony Space your repository is connected to
     space: TestSpace
 
-    # Provide the long term Colony token which could be generated
-    # on the 'Integrations' page under the Colony's Settings page
-    # or generate a new one with the REST API
+    # Provide the long term Colony token. You can generate it in Colony > Settings > Integrations
+    # or via the REST API.
     colony_token: ${{ secrets.COLONY_TOKEN }}
 
-    # Provide the name of the blueprint you would like to use as a source for the sandbox.
+    # Provide the name of the blueprint to be used as a source for the sandbox.
     blueprint_name: WebApp
 
-    # [Optional] Provide a name for the Sandbox. If not set, the name will be generated automatically
+    # [Optional] Provide a name for the sandbox. If not set, the name will be generated automatically
     # using the following pattern <BlueprintName>-build-<RunNumber>
     sandbox_name: demo-sb
 
-    # [Optional] Your Colony account name. The account name is equal to your subdomain in the Colony URL.
-    # If set, an action prints a link to the Sandbox to workflow log 
+    # [Optional] Your Colony account name. The account name is your subdomain in the Colony URL.
+    # If set, an action prints (to the workflow log) a link to the sandbox.  
     colony_account: demo-acct
 
-    # [Optional] Run the Blueprint version from a remote Git branch. If not provided, the branch
-    # currently connected to Colony will be used
+    # [Optional] Run the blueprint version from a remote Git branch. If not provided, the branch
+    # currently connected to Colony will be used.
     branch: development
 
-    # [Optional] The Blueprints inputs can be provided as a comma-separated list of key=value
+    # [Optional] You can provide the blueprint's inputs as a comma-separated list of key=value
     # pairs. For example: key1=value1, key2=value2.
     inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
 
     # [Optional] A comma-separated list of artifacts per application. These are relative to the
-    # artifact repository root defined in Colony. Example: appName1=path1, appName2=path2.
+    # artifact repository's root defined in Colony. Example: appName1=path1, appName2=path2.
     artifacts: 'flask-app=artifacts/latest/flask_app.tar.gz,mysql=artifacts/latest/mysql.tar.gz'
 
-    # [Optional] Set the timeout in minutes to wait for the sandbox to become active. If not set, an
-    # action just starts a sandbox and return its ID without waiting for 'Active' status
+    # [Optional] Set the timeout to wait (in minutes) for the sandbox to become active. If not set, an
+    # action just starts a sandbox and returns its ID without waiting for 'Active' status.
     timeout: 15
 
-    # [Optional] Set the Sandbox duration in minutes. The Sandbox will automatically de-provision at 
-    # the end of the provided duration. Default is 120 minutes
+    # [Optional] Set the sandbox duration in minutes. The sandbox will automatically de-provision at 
+    # the end of the provided duration. Default is 120 minutes.
     duration: 60
 ```
 ### Action outputs
 
-- `sandbox_id` - The ID of launched Colony Sandbox. Will be returned regardless timeout is set or not
-- `sandbox_details` - The JSON string representing the full sandbox details
-- `sandbox_shortcuts` - The JSON string representing mapping between apps and links to access them. Example:
+- `sandbox_id` - ID of the launched Colony sandbox. sandbox_id is returned regardless if timeout is set or not
+- `sandbox_details` - JSON string that represents the full sandbox details
+- `sandbox_shortcuts` - JSON string that represents mapping between applications and the links to access them. Example:
     ```json
     {
         "app1": ["http://app1-path.com:80", "http://app1-path.com:6060"],
@@ -66,7 +65,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and A
 
 ### CI
 
-The following example demonstrates how this action could be used in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside Colony Sandbox
+The following example demonstrates how to use this action in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside a Colony sandbox:
 
 ```yaml
 name: CI
@@ -129,9 +128,9 @@ jobs:
 ```
 ### Blueprints validation
 
-If you work on Colony Blueprints repository you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. So that, you can ensure that not only is your blueprint syntax valid but also a working sandbox could be launched using it.
+If you're working on Colony's blueprints repository, you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. This way, you can both ensure your blueprint's syntax is valid and also verify that a working sandbox can be launched using it.
 
-Please note that the example also shows how you can force the sandbox to terminate if it was not ready within a timeout or was deployed with errors.
+Please note that this example also shows how to force the sandbox to terminate if it either was not ready within a defined timeout or deployed with errors.
 
 ```yaml
 name: CI
