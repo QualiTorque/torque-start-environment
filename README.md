@@ -2,14 +2,14 @@
 
 This action integrates CloudShell Torque into your CI/CD pipeline.
 
-You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [torque-end-sb-action](https://github.com/QualiSystemsLab/torque-end-sb-action)).
+You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [torque-end-sb-action](https://github.com/QualiTorque/torque-end-sb-action)).
 
 To use this GitHub Action you need to have an account in CloudShell Torque and an API token.
 
 ## Usage
 
 ```yaml
-- name: QualiSystemsLab/torque-start-sb-action@v0.0.1
+- name: QualiTorque/torque-start-sb-action@v0.0.1
   with:
     # The name of the Torque Space your repository is connected to
     space: TestSpace
@@ -65,7 +65,7 @@ To use this GitHub Action you need to have an account in CloudShell Torque and a
 
 ### CI
 
-The following example demonstrates how to use this action in combination with [torque-end-sb-action](https://github.com/QualiSystemsLab/torque-end-sb-action) to run tests against some flask web application deployed inside a Torque sandbox:
+The following example demonstrates how to use this action in combination with [torque-end-sb-action](https://github.com/QualiTorque/torque-end-sb-action) to run tests against some flask web application deployed inside a Torque sandbox:
 
 ```yaml
 name: CI
@@ -99,7 +99,7 @@ jobs:
     steps:
     - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiSystemsLab/torque-start-sb-action@v0.0.1
+      uses: QualiTorque/torque-start-sb-action@v0.0.1
       with:
         space: Demo
         blueprint_name: WebApp
@@ -120,7 +120,7 @@ jobs:
         done
 
     - name: Stop sandbox
-      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
@@ -128,7 +128,7 @@ jobs:
 ```
 ### Blueprints validation
 
-If you're working on Torque's blueprints repository, you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/torque-validate-bp-action) action and start/stop actions. This way, you can both ensure your blueprint's syntax is valid and also verify that a working sandbox can be launched using it.
+If you're working on Torque's blueprints repository, you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiTorque/torque-validate-bp-action) action and start/stop actions. This way, you can both ensure your blueprint's syntax is valid and also verify that a working sandbox can be launched using it.
 
 Please note that this example also shows how to force the sandbox to terminate if it either was not ready within a defined timeout or deployed with errors.
 
@@ -150,7 +150,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Torque validate blueprints
-      uses: QualiSystemsLab/torque-validate-bp-action@v0.0.1
+      uses: QualiTorque/torque-validate-bp-action@v0.0.1
       with:
         space: Demo
         files_list: blueprints/empty-bp-empty-app.yaml
@@ -173,7 +173,7 @@ jobs:
     steps:
     - name: Start sandbox
       id: start-sandbox
-      uses: QualiSystemsLab/torque-start-sb-action@v0.0.1
+      uses: QualiTorque/torque-start-sb-action@v0.0.1
       with:
         space: Demo
         blueprint_name: empty-bp-empty-app
@@ -183,7 +183,7 @@ jobs:
         timeout: 10
     - name: End sandbox on failure
       if: failure() && steps.start-sandbox.outputs.sandbox_id != ''
-      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{steps.start-sandbox.outputs.sandbox_id}}
@@ -198,7 +198,7 @@ jobs:
 
     steps:
     - name: Stop sandbox
-      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{needs.start-sb.outputs.sandbox_id}}
