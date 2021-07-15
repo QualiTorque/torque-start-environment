@@ -1,10 +1,10 @@
 # torque-start-sb-action
 
-This action integrates CloudShell Torque into your CI/CD pipeline.
+This action integrates Torque into your CI/CD pipeline.
 
 You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [torque-end-sb-action](https://github.com/QualiTorque/torque-end-sb-action)).
 
-To use this GitHub Action you need to have an account in CloudShell Torque and an API token.
+To use this GitHub Action you need to have an account in Torque and an API token.
 
 ## Usage
 

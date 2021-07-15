@@ -1,5 +1,5 @@
 name: 'Start Torque Sandbox'
-description: 'Starts a sandbox in CloudShell Torque and returns its details'
+description: 'Starts a sandbox in Torque and returns its details'
 author: 'Quali'
 inputs:
   space:
