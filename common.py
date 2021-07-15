@@ -2,21 +2,21 @@ import sys
 import requests
 
 
-class ColonySession(requests.Session):
+class TorqueSession(requests.Session):
     def __init__(self):
-        super(ColonySession, self).__init__()
+        super(TorqueSession, self).__init__()
         self.headers.update({"Accept": "application/json", "Accept-Charset": "utf-8"})
 
-    def colony_auth(self, token: str) -> None:
+    def torque_auth(self, token: str) -> None:
         self.headers.update({"Authorization": f"Bearer {token}"})
 
 
-class ColonyClient:
-    def __init__(self, space: str, token: str, session: ColonySession = ColonySession(), account: str = None):
+class TorqueClient:
+    def __init__(self, space: str, token: str, session: TorqueSession = TorqueSession(), account: str = None):
         self.token = token
         self.space = space
         self.session = session
-        session.colony_auth(self.token)
+        session.torque_auth(self.token)
         self.base_api_url = f"https://cloudshellcolony.com/api/spaces/{self.space}"
 
     def _request(self, endpoint: str, method: str = 'GET', params: dict = None) -> requests.Response:

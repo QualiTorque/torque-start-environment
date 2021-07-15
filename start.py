@@ -1,10 +1,10 @@
 import os
 import sys
 import argparse
-from common import ColonyClient, LoggerService
+from common import TorqueClient, LoggerService
 
 def parse_user_input():
-    parser = argparse.ArgumentParser(prog='Colony Sandbox Start')
+    parser = argparse.ArgumentParser(prog='Torque Sandbox Start')
 
     parser.add_argument("blueprint_name", type=str, help="The name of source blueprint")
     parser.add_argument("sandbox_name", type=str, help="The name of sandbox")
@@ -45,11 +45,11 @@ if __name__ == "__main__":
     inputs_dict = parse_comma_separated_string(args.inputs)
     artifacts_dict = parse_comma_separated_string(args.artifacts)
 
-    space = os.environ.get("COLONY_SPACE", "")
-    token = os.environ.get("COLONY_TOKEN", "")
-    account = os.environ.get("COLONY_ACCOUNT", "")
+    space = os.environ.get("TORQUE_SPACE", "")
+    token = os.environ.get("TORQUE_TOKEN", "")
+    account = os.environ.get("TORQUE_ACCOUNT", "")
 
-    client = ColonyClient(space, token)
+    client = TorqueClient(space, token)
 
     try: 
         sandbox_id = client.start_sandbox(

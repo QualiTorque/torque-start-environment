@@ -4,10 +4,10 @@ import argparse
 import datetime
 import time
 import json
-from common import ColonyClient, LoggerService
+from common import TorqueClient, LoggerService
 
 def parse_user_input():
-    parser = argparse.ArgumentParser(prog='Colony Sandbox Start')
+    parser = argparse.ArgumentParser(prog='Torque Sandbox Start')
     parser.add_argument("sandbox_id", type=str, help="The name of sandbox")
     parser.add_argument("timeout", type=int, help="Set the timeout in minutes to wait for the sandbox to become active")
 
@@ -28,10 +28,10 @@ def _simplify_state(sandbox_progress):
 if __name__ == "__main__":
     args = parse_user_input()
 
-    space = os.environ.get("COLONY_SPACE", "")
-    token = os.environ.get("COLONY_TOKEN", "")
+    space = os.environ.get("TORQUE_SPACE", "")
+    token = os.environ.get("TORQUE_TOKEN", "")
 
-    client = ColonyClient(space, token)
+    client = TorqueClient(space, token)
     sandbox_id = args.sandbox_id
     timeout = args.timeout
 

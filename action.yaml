@@ -1,9 +1,9 @@
-name: 'Start Colony Sandbox'
-description: 'Starts a sandbox in CloudShell Colony and returns its details'
+name: 'Start Torque Sandbox'
+description: 'Starts a sandbox in CloudShell Torque and returns its details'
 author: 'Quali'
 inputs:
   space:
-    description: 'The Colony space to start the sandbox in'
+    description: 'The Torque space to start the sandbox in'
     required: true
   blueprint_name:
     description: 'The name of the Blueprint to use'
@@ -11,12 +11,12 @@ inputs:
   sandbox_name:
     description: 'Provide a name for the Sandbox'
     required: false
-  colony_token:
-    description: 'A Colony longterm token'
+  torque_token:
+    description: 'A Torque longterm token'
     required: true
-  colony_account:
+  torque_account:
     required: false
-    description: 'Your Colony account name. The account name is equal to your subdomain in the Colony URL.'
+    description: 'Your Torque account name. The account name is equal to your subdomain in the Torque URL.'
   branch:
     description: 'Use the Blueprint version from a remote Git branch'
     required: false
@@ -37,7 +37,7 @@ inputs:
 
 outputs:
   sandbox_id:
-    description: 'The ID of launched Colony Sandbox'
+    description: 'The ID of launched Torque Sandbox'
     value: ${{ steps.start-sandbox.outputs.sandbox_id }}
   sandbox_shortcuts:
     description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
@@ -65,9 +65,9 @@ runs:
         python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
           "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
       env:
-        COLONY_SPACE: ${{ inputs.space }}
-        COLONY_TOKEN: ${{ inputs.colony_token }}
-        COLONY_ACCOUNT: ${{ inputs.colony_account }}
+        TORQUE_SPACE: ${{ inputs.space }}
+        TORQUE_TOKEN: ${{ inputs.torque_token }}
+        TORQUE_ACCOUNT: ${{ inputs.torque_account }}
       shell: bash
           
     - id: wait-sandbox
@@ -86,8 +86,8 @@ runs:
         fi
       shell: bash
       env:
-        COLONY_SPACE: ${{ inputs.space }}
-        COLONY_TOKEN: ${{ inputs.colony_token }}
+        TORQUE_SPACE: ${{ inputs.space }}
+        TORQUE_TOKEN: ${{ inputs.torque_token }}
         
 branding:
   icon: 'play-circle'  

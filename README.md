@@ -1,22 +1,22 @@
-# colony-start-sb-action
+# torque-start-sb-action
 
-This action integrates CloudShell Colony into your CI/CD pipeline.
+This action integrates CloudShell Torque into your CI/CD pipeline.
 
-You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action)).
+You can configure your available build workflows to create a sandbox from any blueprint, start your tests and end the sandbox when finished (using [torque-end-sb-action](https://github.com/QualiSystemsLab/torque-end-sb-action)).
 
-To use this GitHub Action you need to have an account in CloudShell Colony and an API token.
+To use this GitHub Action you need to have an account in CloudShell Torque and an API token.
 
 ## Usage
 
 ```yaml
-- name: QualiSystemsLab/colony-start-sb-action@v0.0.1
+- name: QualiSystemsLab/torque-start-sb-action@v0.0.1
   with:
-    # The name of the Colony Space your repository is connected to
+    # The name of the Torque Space your repository is connected to
     space: TestSpace
 
-    # Provide the long term Colony token. You can generate it in Colony > Settings > Integrations
+    # Provide the long term Torque token. You can generate it in Torque > Settings > Integrations
     # or via the REST API.
-    colony_token: ${{ secrets.COLONY_TOKEN }}
+    torque_token: ${{ secrets.TORQUE_TOKEN }}
 
     # Provide the name of the blueprint to be used as a source for the sandbox.
     blueprint_name: WebApp
@@ -25,12 +25,12 @@ To use this GitHub Action you need to have an account in CloudShell Colony and a
     # using the following pattern <BlueprintName>-build-<RunNumber>
     sandbox_name: demo-sb
 
-    # [Optional] Your Colony account name. The account name is your subdomain in the Colony URL.
+    # [Optional] Your Torque account name. The account name is your subdomain in the Torque URL.
     # If set, an action prints (to the workflow log) a link to the sandbox.  
-    colony_account: demo-acct
+    torque_account: demo-acct
 
     # [Optional] Run the blueprint version from a remote Git branch. If not provided, the branch
-    # currently connected to Colony will be used.
+    # currently connected to Torque will be used.
     branch: development
 
     # [Optional] You can provide the blueprint's inputs as a comma-separated list of key=value
@@ -38,7 +38,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and a
     inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
 
     # [Optional] A comma-separated list of artifacts per application. These are relative to the
-    # artifact repository's root defined in Colony. Example: appName1=path1, appName2=path2.
+    # artifact repository's root defined in Torque. Example: appName1=path1, appName2=path2.
     artifacts: 'flask-app=artifacts/latest/flask_app.tar.gz,mysql=artifacts/latest/mysql.tar.gz'
 
     # [Optional] Set the timeout to wait (in minutes) for the sandbox to become active. If not set, an
@@ -51,7 +51,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and a
 ```
 ### Action outputs
 
-- `sandbox_id` - ID of the launched Colony sandbox. sandbox_id is returned regardless if timeout is set or not
+- `sandbox_id` - ID of the launched Torque sandbox. sandbox_id is returned regardless if timeout is set or not
 - `sandbox_details` - JSON string that represents the full sandbox details
 - `sandbox_shortcuts` - JSON string that represents mapping between applications and the links to access them. Example:
     ```json
@@ -65,7 +65,7 @@ To use this GitHub Action you need to have an account in CloudShell Colony and a
 
 ### CI
 
-The following example demonstrates how to use this action in combination with [colony-end-sb-action](https://github.com/QualiSystemsLab/colony-end-sb-action) to run tests against some flask web application deployed inside a Colony sandbox:
+The following example demonstrates how to use this action in combination with [torque-end-sb-action](https://github.com/QualiSystemsLab/torque-end-sb-action) to run tests against some flask web application deployed inside a Torque sandbox:
 
 ```yaml
 name: CI
@@ -92,18 +92,18 @@ jobs:
         aws-region: us-east-1
         run: aws s3 copy ./workspace/flaskapp.latest.tar.gz s3://myartifacts/latest
         
-  test-with-colony:
+  test-with-torque:
     needs: build-and-publish
     runs-on: ubuntu-latest
     
     steps:
-    - name: Start Colony Sandbox
+    - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiSystemsLab/colony-start-sb-action@v0.0.1
+      uses: QualiSystemsLab/torque-start-sb-action@v0.0.1
       with:
         space: Demo
         blueprint_name: WebApp
-        colony_token: ${{ secrets.COLONY_TOKEN }}
+        torque_token: ${{ secrets.TORQUE_TOKEN }}
         duration: 120
         timeout: 30
         artifacts: 'flask-app=latest/flaskapp.lates.tar.gz'
@@ -120,15 +120,15 @@ jobs:
         done
 
     - name: Stop sandbox
-      uses: QualiSystemsLab/colony-end-sb-action@v0.0.1
+      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
-        colony_token: ${{ secrets.COLONY_TOKEN }} 
+        torque_token: ${{ secrets.TORQUE_TOKEN }} 
 ```
 ### Blueprints validation
 
-If you're working on Colony's blueprints repository, you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/colony-validate-bp-action) action and start/stop actions. This way, you can both ensure your blueprint's syntax is valid and also verify that a working sandbox can be launched using it.
+If you're working on Torque's blueprints repository, you can extend the validation capabilities of your workflow by using a combination of the [validate](https://github.com/QualiSystemsLab/torque-validate-bp-action) action and start/stop actions. This way, you can both ensure your blueprint's syntax is valid and also verify that a working sandbox can be launched using it.
 
 Please note that this example also shows how to force the sandbox to terminate if it either was not ready within a defined timeout or deployed with errors.
 
@@ -149,12 +149,12 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Colony validate blueprints
-      uses: QualiSystemsLab/colony-validate-bp-action@v0.0.1
+    - name: Torque validate blueprints
+      uses: QualiSystemsLab/torque-validate-bp-action@v0.0.1
       with:
         space: Demo
         files_list: blueprints/empty-bp-empty-app.yaml
-        colony_token: ${{ secrets.COLONY_TOKEN }}
+        torque_token: ${{ secrets.TORQUE_TOKEN }}
 
   some-parallel-job:
     needs: validate
@@ -173,21 +173,21 @@ jobs:
     steps:
     - name: Start sandbox
       id: start-sandbox
-      uses: QualiSystemsLab/colony-start-sb-action@v0.0.1
+      uses: QualiSystemsLab/torque-start-sb-action@v0.0.1
       with:
         space: Demo
         blueprint_name: empty-bp-empty-app
-        colony_token: ${{ secrets.COLONY_TOKEN }}
+        torque_token: ${{ secrets.TORQUE_TOKEN }}
         branch: master
         duration: 30
         timeout: 10
     - name: End sandbox on failure
       if: failure() && steps.start-sandbox.outputs.sandbox_id != ''
-      uses: QualiSystemsLab/colony-end-sb-action@v0.0.1
+      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{steps.start-sandbox.outputs.sandbox_id}}
-        colony_token: ${{ secrets.COLONY_TOKEN }}
+        torque_token: ${{ secrets.TORQUE_TOKEN }}
 
     outputs:
       sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
@@ -198,9 +198,9 @@ jobs:
 
     steps:
     - name: Stop sandbox
-      uses: QualiSystemsLab/colony-end-sb-action@v0.0.1
+      uses: QualiSystemsLab/torque-end-sb-action@v0.0.1
       with:
         space: Demo
         sandbox_id: ${{needs.start-sb.outputs.sandbox_id}}
-        colony_token: ${{ secrets.COLONY_TOKEN }}
+        torque_token: ${{ secrets.TORQUE_TOKEN }}
 ```
