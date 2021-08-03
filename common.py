@@ -17,7 +17,7 @@ class TorqueClient:
         self.space = space
         self.session = session
         session.torque_auth(self.token)
-        self.base_api_url = f"https://cloudshellcolony.com/api/spaces/{self.space}"
+        self.base_api_url = f"https://qtorque.io/api/spaces/{self.space}"
 
     def _request(self, endpoint: str, method: str = 'GET', params: dict = None) -> requests.Response:
         self._validate_creds()

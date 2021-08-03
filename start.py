@@ -36,7 +36,7 @@ def parse_comma_separated_string(params_string: str = None) -> dict:
     return res
 
 def _compose_sb_url(account_name, sandbox_id, space):
-    return f"https://{account}.cloudshellcolony.com/{space}/sandboxes/{sandbox_id}"
+    return f"https://{account}.qtorque.io/{space}/sandboxes/{sandbox_id}"
 
 
 if __name__ == "__main__":
