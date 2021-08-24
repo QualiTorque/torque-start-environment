@@ -9,7 +9,7 @@ To use this GitHub Action you need to have an account in Torque and an API token
 ## Usage
 
 ```yaml
-- name: QualiTorque/torque-start-sb-action@v0.0.1
+- name: QualiTorque/torque-start-sb-action@v0.0.3
   with:
     # The name of the Torque Space your repository is connected to
     space: TestSpace
@@ -99,7 +99,7 @@ jobs:
     steps:
     - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiTorque/torque-start-sb-action@v0.0.1
+      uses: QualiTorque/torque-start-sb-action@v0.0.3
       with:
         space: Demo
         blueprint_name: WebApp
@@ -120,7 +120,7 @@ jobs:
         done
 
     - name: Stop sandbox
-      uses: QualiTorque/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-sb-action@v0.0.3
       with:
         space: Demo
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
@@ -150,7 +150,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Torque validate blueprints
-      uses: QualiTorque/torque-validate-bp-action@v0.0.1
+      uses: QualiTorque/torque-validate-bp-action@v0.0.3
       with:
         space: Demo
         files_list: blueprints/empty-bp-empty-app.yaml
@@ -173,7 +173,7 @@ jobs:
     steps:
     - name: Start sandbox
       id: start-sandbox
-      uses: QualiTorque/torque-start-sb-action@v0.0.1
+      uses: QualiTorque/torque-start-sb-action@v0.0.3
       with:
         space: Demo
         blueprint_name: empty-bp-empty-app
@@ -198,7 +198,7 @@ jobs:
 
     steps:
     - name: Stop sandbox
-      uses: QualiTorque/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-sb-action@v0.0.3
       with:
         space: Demo
         sandbox_id: ${{needs.start-sb.outputs.sandbox_id}}
