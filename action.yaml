@@ -14,12 +14,9 @@ inputs:
   torque_token:
     description: 'A Torque longterm token'
     required: true
-  torque_account:
-    required: false
-    description: 'Your Torque account name. The account name is equal to your subdomain in the Torque URL.'
-  branch:
-    description: 'Use the Blueprint version from a remote Git branch'
-    required: false
+  # branch:
+  #   description: 'Use the Blueprint version from a remote Git branch'
+  #   required: false
   duration:
     description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
     required: false
@@ -28,9 +25,6 @@ inputs:
     description: 'Set the time (minutes) to wait for the sandbox to become active. When setting to 0 the action will end with just the sandbox ID output.'
     required: false
     default: '0'
-  artifacts:
-    required: false
-    description: 'A comma-separated list of artifacts per application. Example: appName1=path1, appName2=path2'
   inputs:
     required: false
     description: 'A comma-separated list of key=value pairs. For example: key1=value1, key2=value2'
@@ -39,9 +33,6 @@ outputs:
   sandbox_id:
     description: 'The ID of launched Torque Sandbox'
     value: ${{ steps.start-sandbox.outputs.sandbox_id }}
-  sandbox_shortcuts:
-    description: 'Json with applications links. Format {app1:link1,..,appN:linkN}'
-    value: ${{ steps.wait-sandbox.outputs.sandbox_shortcuts }}
   sandbox_details:
     description: 'The Full sandbox details in a json format'
     value: ${{ steps.wait-sandbox.outputs.sandbox_details }}
@@ -63,11 +54,11 @@ runs:
 
         #Run start command
         python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
-          "${{ inputs.branch }}" "${{ inputs.inputs }}" "${{ inputs.artifacts }}"
+          "${{ inputs.inputs }}"
+          # "${{ inputs.branch }}" "${{ inputs.inputs }}"
       env:
         TORQUE_SPACE: ${{ inputs.space }}
         TORQUE_TOKEN: ${{ inputs.torque_token }}
-        TORQUE_ACCOUNT: ${{ inputs.torque_account }}
       shell: bash
           
     - id: wait-sandbox

@@ -12,12 +12,14 @@ class TorqueSession(requests.Session):
 
 
 class TorqueClient:
+    TORQUE_SERVER = "portal.qtorque.io"
+
     def __init__(self, space: str, token: str, session: TorqueSession = TorqueSession(), account: str = None):
         self.token = token
         self.space = space
         self.session = session
         session.torque_auth(self.token)
-        self.base_api_url = f"https://qtorque.io/api/spaces/{self.space}"
+        self.base_api_url = f"https://{self.TORQUE_SERVER}/api/spaces/{self.space}"
 
     def _request(self, endpoint: str, method: str = 'GET', params: dict = None) -> requests.Response:
         self._validate_creds()
@@ -56,8 +58,8 @@ class TorqueClient:
         sandbox_name: str,
         duration: int = 120,
         inputs: dict = None,
-        artifacts: dict = None,
-        branch: str = None) -> str:
+        # branch: str = None
+        ) -> str:
 
         path = "sandbox"
         iso_duration = f"PT{duration}M"
@@ -66,13 +68,12 @@ class TorqueClient:
             "blueprint_name": blueprint_name,
             "duration": iso_duration,
             "inputs": inputs,
-            "artifacts": artifacts,
         }
 
-        if branch:
-            params["source"] = {
-                "branch": branch,
-            }
+        # if branch:
+        #     params["source"] = {
+        #         "branch": branch,
+        #     }
   
         res = self._request(path, method="POST", params=params)
         sandbox_id = res.json()["id"]
@@ -81,7 +82,7 @@ class TorqueClient:
 
     def get_sandbox(self, sandbox_id: str) -> dict:
         """Returns Sandbox as a json"""
-        path = f"sandbox/{sandbox_id}"
+        path = f"environments/{sandbox_id}"
 
         res = self._request(path, method="GET")
 
@@ -89,7 +90,7 @@ class TorqueClient:
 
 
     def end_sandbox(self, sandbox_id: str) -> None:
-        path = f"sandbox/{sandbox_id}"
+        path = f"environments/{sandbox_id}"
 
         res = self._request(path, method="DELETE")
 

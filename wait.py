@@ -1,5 +1,4 @@
 import os
-import sys
 import argparse
 import datetime
 import time
@@ -13,13 +12,6 @@ def parse_user_input():
 
     return parser.parse_args()
 
-def build_shortcuts_json(sandbox_spec):
-    res = {}
-    applications = sandbox_spec.get('applications', [])
-    for app in applications:
-        res[app["name"]] = list(app['shortcuts']).copy()
-    
-    return res
 
 def _simplify_state(sandbox_progress):
     return {step: description["status"] for step, description in sandbox_progress.items()}
@@ -44,7 +36,7 @@ if __name__ == "__main__":
     start_time = datetime.datetime.now()
     LoggerService.message(f"Waiting for the Sandbox {sandbox_id} to start...")
 
-    sandbox_state = {}
+    sandbox_state = ''
 
     while (datetime.datetime.now() - start_time).seconds < timeout * 60:
         try:
@@ -52,17 +44,21 @@ if __name__ == "__main__":
         except Exception as e:
             LoggerService.error(f"Unable to get sandbox with ID {sandbox_id}; reason: {e}")
 
-        status = sandbox["sandbox_status"]
-        progress = sandbox["launching_progress"]
+        sb_details = sandbox.get("details", None)
 
-        simple_state = _simplify_state(progress)
-        if simple_state != sandbox_state:
-            sandbox_state.update(simple_state)
+        if not sb_details:
+            LoggerService.error(f"Torque API returned unknown format of response: {json.dumps(sandbox)}")
+            break
+
+        status = sb_details["computed_status"]
+        progress = sb_details["state"]["current_state"]
+
+        if progress != sandbox_state:
+            sandbox_state = progress
             LoggerService.message(f"Current state: {str(sandbox_state)}")
 
         if status == "Active":
-            LoggerService.set_output("sandbox_details", json.dumps(sandbox))
-            LoggerService.set_output("sandbox_shortcuts", json.dumps(build_shortcuts_json(sandbox)))
+            LoggerService.set_output("sandbox_details", json.dumps(sb_details))
             LoggerService.success(f"Sandbox {sandbox_id} is active!")
 
         elif status == "Launching":
