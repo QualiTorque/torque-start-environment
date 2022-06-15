@@ -1,5 +1,4 @@
 import os
-import sys
 import argparse
 from common import TorqueClient, LoggerService
 
@@ -9,9 +8,8 @@ def parse_user_input():
     parser.add_argument("blueprint_name", type=str, help="The name of source blueprint")
     parser.add_argument("sandbox_name", type=str, help="The name of sandbox")
     parser.add_argument("duration", type=int, default=120, help="The name of source blueprint")
-    parser.add_argument("branch", type=str, help="Run the Blueprint version from a remote Git branch")
+    # parser.add_argument("branch", type=str, help="Run the Blueprint version from a remote Git branch")
     parser.add_argument("inputs", type=str, help="The inputs can be provided as a comma-separated list of key=value pairs")
-    parser.add_argument("artifacts", type=str, help="A comma-separated list of artifacts per application")
 
     return parser.parse_args()
 
@@ -35,19 +33,17 @@ def parse_comma_separated_string(params_string: str = None) -> dict:
 
     return res
 
-def _compose_sb_url(account_name, sandbox_id, space):
-    return f"https://{account}.qtorque.io/{space}/sandboxes/{sandbox_id}"
+def _compose_sb_url(sandbox_id, space):
+    return f"https://{TorqueClient.TORQUE_SERVER}/{space}/sandboxes/{sandbox_id}"
 
 
 if __name__ == "__main__":
     args = parse_user_input()
 
     inputs_dict = parse_comma_separated_string(args.inputs)
-    artifacts_dict = parse_comma_separated_string(args.artifacts)
 
     space = os.environ.get("TORQUE_SPACE", "")
     token = os.environ.get("TORQUE_TOKEN", "")
-    account = os.environ.get("TORQUE_ACCOUNT", "")
 
     client = TorqueClient(space, token)
 
@@ -57,15 +53,14 @@ if __name__ == "__main__":
             args.sandbox_name,
             args.duration,
             inputs_dict,
-            artifacts_dict,
-            args.branch
+            # args.branch
         )
     except Exception as e:
         LoggerService.error(f"Unable to start sandbox. Reason {e}")
 
-    if account:
-        url = _compose_sb_url(account, sandbox_id, space)
-        LoggerService.message(f"Sandbox URL: {url}")
+
+    url = _compose_sb_url(sandbox_id, space)
+    LoggerService.message(f"Sandbox URL: {url}")
 
     LoggerService.set_output("sandbox_id", sandbox_id)
     LoggerService.success(f"Sandbox {sandbox_id} has started")
