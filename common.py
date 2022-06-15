@@ -1,13 +1,6 @@
 import sys
 import requests
-
-
-def acquire_version():
-    with open("./version", "r") as version_file:
-        version = version_file.readline().strip()
-        version = version.replace('v', '')
-
-    return version
+from constants import VERSION
 
 
 class TorqueSession(requests.Session):
@@ -17,7 +10,7 @@ class TorqueSession(requests.Session):
             {
                 "Accept": "application/json",
                 "Accept-Charset": "utf-8",
-                "User-Agent": f"Torque-Plugin-Github-Actions/{acquire_version()}",
+                "User-Agent": f"Torque-Plugin-Github-Actions/{VERSION}",
             }
         )
 
