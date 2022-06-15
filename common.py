@@ -68,7 +68,7 @@ class TorqueClient:
         # branch: str = None
         ) -> str:
 
-        path = "sandbox"
+        path = "environments"
         iso_duration = f"PT{duration}M"
         params = {
             "sandbox_name": sandbox_name,
