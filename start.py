@@ -44,7 +44,6 @@ if __name__ == "__main__":
 
     space = os.environ.get("TORQUE_SPACE", "")
     token = os.environ.get("TORQUE_TOKEN", "")
-    account = os.environ.get("TORQUE_ACCOUNT", "")
 
     client = TorqueClient(space, token)
 

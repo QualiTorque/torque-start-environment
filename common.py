@@ -2,10 +2,24 @@ import sys
 import requests
 
 
+def acquire_version():
+    with open("version", "r") as version_file:
+        version = version_file.readline().strip()
+        version = version.replace('v', '')
+
+    return version
+
+
 class TorqueSession(requests.Session):
     def __init__(self):
         super(TorqueSession, self).__init__()
-        self.headers.update({"Accept": "application/json", "Accept-Charset": "utf-8"})
+        self.headers.update(
+            {
+                "Accept": "application/json",
+                "Accept-Charset": "utf-8",
+                "User-Agent": f"Torque-Plugin-Github-Actions/{acquire_version()}",
+            }
+        )
 
     def torque_auth(self, token: str) -> None:
         self.headers.update({"Authorization": f"Bearer {token}"})
