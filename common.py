@@ -3,7 +3,7 @@ import requests
 
 
 def acquire_version():
-    with open("version", "r") as version_file:
+    with open("./version", "r") as version_file:
         version = version_file.readline().strip()
         version = version.replace('v', '')
 
