@@ -82,7 +82,7 @@ jobs:
     steps:
     - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiTorque/torque-start-sb-action@v0.1
+      uses: QualiTorque/torque-start-sb-action@v0.1.1
       with:
         space: Demo
         blueprint_name: WebApp
