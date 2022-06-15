@@ -6,10 +6,12 @@ You can configure your available build workflows to create a sandbox from any bl
 
 To use this GitHub Action you need to have an account in Torque and an API token.
 
+> **_NOTE:_** Torque spec 1 support is available in releases <0.1.0 
+
 ## Usage
 
 ```yaml
-- name: QualiTorque/torque-start-sb-action@v0.0.3
+- name: QualiTorque/torque-start-sb-action@v0.1
   with:
     # The name of the Torque Space your repository is connected to
     space: TestSpace
@@ -25,21 +27,9 @@ To use this GitHub Action you need to have an account in Torque and an API token
     # using the following pattern <BlueprintName>-build-<RunNumber>
     sandbox_name: demo-sb
 
-    # [Optional] Your Torque account name. The account name is your subdomain in the Torque URL.
-    # If set, an action prints (to the workflow log) a link to the sandbox.  
-    torque_account: demo-acct
-
-    # [Optional] Run the blueprint version from a remote Git branch. If not provided, the branch
-    # currently connected to Torque will be used.
-    branch: development
-
     # [Optional] You can provide the blueprint's inputs as a comma-separated list of key=value
     # pairs. For example: key1=value1, key2=value2.
     inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
-
-    # [Optional] A comma-separated list of artifacts per application. These are relative to the
-    # artifact repository's root defined in Torque. Example: appName1=path1, appName2=path2.
-    artifacts: 'flask-app=artifacts/latest/flask_app.tar.gz,mysql=artifacts/latest/mysql.tar.gz'
 
     # [Optional] Set the timeout to wait (in minutes) for the sandbox to become active. If not set, an
     # action just starts a sandbox and returns its ID without waiting for 'Active' status.
@@ -53,13 +43,6 @@ To use this GitHub Action you need to have an account in Torque and an API token
 
 - `sandbox_id` - ID of the launched Torque sandbox. sandbox_id is returned regardless if timeout is set or not
 - `sandbox_details` - JSON string that represents the full sandbox details
-- `sandbox_shortcuts` - JSON string that represents mapping between applications and the links to access them. Example:
-    ```json
-    {
-        "app1": ["http://app1-path.com:80", "http://app1-path.com:6060"],
-        "app2": ["http://app2-path.com:8080", "http://app2-path.com:3130"]
-    }
-    ```
 
 ## Examples
 
@@ -99,28 +82,23 @@ jobs:
     steps:
     - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiTorque/torque-start-sb-action@v0.0.3
+      uses: QualiTorque/torque-start-sb-action@v0.1
       with:
         space: Demo
         blueprint_name: WebApp
         torque_token: ${{ secrets.TORQUE_TOKEN }}
         duration: 120
         timeout: 30
-        artifacts: 'flask-app=latest/flaskapp.lates.tar.gz'
         inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
     
     - name: Testing
       id: test-app
       run: |
         echo "Running tests against sandbox with id: ${{ steps.start-sandbox.outputs.sandbox_id }}"
-        shortcuts=${{ steps.start-sandbox.outputs.sandbox_shortcuts }}
-        readarray -t shortcuts <<< "$(jq '. | .flask-app[]' <<< '${{ steps.start-sandbox.outputs.sandbox_shortcuts }}')"
-        for shortcut in ${shortcuts[@]}; do
-            echo "Do something with this ${shortcut}."
-        done
+        echo "Do something with sandbox details json: ${{ steps.start-sandbox.outputs.sandbox_details }}"
 
     - name: Stop sandbox
-      uses: QualiTorque/torque-end-sb-action@v0.0.3
+      uses: QualiTorque/torque-end-sb-action@v0.1
       with:
         space: Demo
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
