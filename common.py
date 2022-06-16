@@ -31,6 +31,7 @@ class TorqueClient:
         self.token = token
         self.space = space
         self.session = session
+        self.torque_url = torque_url
         session.torque_auth(self.token)
         self.base_api_url = f"{torque_url}/api/spaces/{self.space}"
 
