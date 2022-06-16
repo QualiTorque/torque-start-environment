@@ -11,7 +11,7 @@ To use this GitHub Action you need to have an account in Torque and an API token
 ## Usage
 
 ```yaml
-- name: QualiTorque/torque-start-sb-action@v0.1
+- name: QualiTorque/torque-start-sb-action@v0.1.1
   with:
     # The name of the Torque Space your repository is connected to
     space: TestSpace
@@ -86,7 +86,7 @@ jobs:
     steps:
     - name: Start Torque Sandbox
       id: start-sandbox
-      uses: QualiTorque/torque-start-sb-action@v0.1
+      uses: QualiTorque/torque-start-sb-action@v0.1.1
       with:
         space: Demo
         blueprint_name: WebApp
@@ -102,7 +102,7 @@ jobs:
         echo "Do something with sandbox details json: ${{ steps.start-sandbox.outputs.sandbox_details }}"
 
     - name: Stop sandbox
-      uses: QualiTorque/torque-end-sb-action@v0.1
+      uses: QualiTorque/torque-end-sb-action@v0.1.0
       with:
         space: Demo
         sandbox_id: ${{ steps.start-sandbox.outputs.sandbox_id }}
