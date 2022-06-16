@@ -33,8 +33,8 @@ def parse_comma_separated_string(params_string: str = None) -> dict:
 
     return res
 
-def _compose_sb_url(sandbox_id, space):
-    return f"https://{TorqueClient.TORQUE_SERVER}/{space}/sandboxes/{sandbox_id}"
+def _compose_sb_url(sandbox_id: str, client: TorqueClient) -> str:
+    return f"{client.torque_url}/{client.space}/sandboxes/{sandbox_id}"
 
 
 if __name__ == "__main__":
@@ -44,8 +44,9 @@ if __name__ == "__main__":
 
     space = os.environ.get("TORQUE_SPACE", "")
     token = os.environ.get("TORQUE_TOKEN", "")
+    url = os.environ.get("TORQUE_URL", "")
 
-    client = TorqueClient(space, token)
+    client = TorqueClient(space, token, url)
 
     try: 
         sandbox_id = client.start_sandbox(
@@ -59,7 +60,7 @@ if __name__ == "__main__":
         LoggerService.error(f"Unable to start sandbox. Reason {e}")
 
 
-    url = _compose_sb_url(sandbox_id, space)
+    url = _compose_sb_url(sandbox_id, client)
     LoggerService.message(f"Sandbox URL: {url}")
 
     LoggerService.set_output("sandbox_id", sandbox_id)
