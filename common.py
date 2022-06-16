@@ -19,23 +19,31 @@ class TorqueSession(requests.Session):
 
 
 class TorqueClient:
-    TORQUE_SERVER = "portal.qtorque.io"
+    DEFAULT_TORQUE_URL = "https://portal.qtorque.io"
 
-    def __init__(self, space: str, token: str, session: TorqueSession = TorqueSession(), account: str = None):
+    def __init__(
+        self,
+        space: str,
+        token: str,
+        torque_url: str = DEFAULT_TORQUE_URL,
+        session: TorqueSession = TorqueSession(),
+    ):
         self.token = token
         self.space = space
         self.session = session
         session.torque_auth(self.token)
-        self.base_api_url = f"https://{self.TORQUE_SERVER}/api/spaces/{self.space}"
+        self.base_api_url = f"{torque_url}/api/spaces/{self.space}"
 
-    def _request(self, endpoint: str, method: str = 'GET', params: dict = None) -> requests.Response:
+    def _request(
+        self, endpoint: str, method: str = "GET", params: dict = None
+    ) -> requests.Response:
         self._validate_creds()
         method = method.upper()
         if method not in ("GET", "PUT", "POST", "DELETE"):
             raise ValueError("Method must be in [GET, POST, PUT, DELETE]")
 
         url = f"{self.base_api_url}/{endpoint}"
-        
+
         request_args = {
             "method": method,
             "url": url,
@@ -50,7 +58,12 @@ class TorqueClient:
 
         response = self.session.request(**request_args)
         if response.status_code >= 400:
-            message = ";".join([f"{err['name']}: {err['message']}" for err in response.json().get("errors", [])])
+            message = ";".join(
+                [
+                    f"{err['name']}: {err['message']}"
+                    for err in response.json().get("errors", [])
+                ]
+            )
             raise Exception(message)
 
         return response
@@ -66,7 +79,7 @@ class TorqueClient:
         duration: int = 120,
         inputs: dict = None,
         # branch: str = None
-        ) -> str:
+    ) -> str:
 
         path = "environments"
         iso_duration = f"PT{duration}M"
@@ -81,7 +94,7 @@ class TorqueClient:
         #     params["source"] = {
         #         "branch": branch,
         #     }
-  
+
         res = self._request(path, method="POST", params=params)
         sandbox_id = res.json()["id"]
 
@@ -94,7 +107,6 @@ class TorqueClient:
         res = self._request(path, method="GET")
 
         return res.json()
-
 
     def end_sandbox(self, sandbox_id: str) -> None:
         path = f"environments/{sandbox_id}"
@@ -112,7 +124,7 @@ class LoggerService:
     def message(message):
         sys.stdout.write(message)
         LoggerService.flush()
-    
+
     @staticmethod
     def error(message, exit=True):
         sys.stdout.write(f"::error::{message}")
@@ -126,7 +138,7 @@ class LoggerService:
         LoggerService.flush()
         if exit:
             sys.exit(0)
-    
+
     @staticmethod
     def set_output(variable, message):
         sys.stdout.write(f"::set-output name={variable}::{message}")

@@ -31,6 +31,10 @@ To use this GitHub Action you need to have an account in Torque and an API token
     # pairs. For example: key1=value1, key2=value2.
     inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
 
+    # [Optional] Provide the url string. In rare cases you migth want to override the main
+    # Torque server address 'https://portal.qtorque.io'. 
+    torque_url: "https://portal.qtorque.io"
+
     # [Optional] Set the timeout to wait (in minutes) for the sandbox to become active. If not set, an
     # action just starts a sandbox and returns its ID without waiting for 'Active' status.
     timeout: 15

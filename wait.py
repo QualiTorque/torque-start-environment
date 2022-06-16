@@ -22,8 +22,9 @@ if __name__ == "__main__":
 
     space = os.environ.get("TORQUE_SPACE", "")
     token = os.environ.get("TORQUE_TOKEN", "")
+    url = os.environ.get("TORQUE_URL", "")
 
-    client = TorqueClient(space, token)
+    client = TorqueClient(space, token, url)
     sandbox_id = args.sandbox_id
     timeout = args.timeout
 
