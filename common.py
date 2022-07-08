@@ -90,6 +90,7 @@ class TorqueClient:
             "duration": iso_duration,
             "inputs": inputs,
         }
+        print(params)
 
         # if branch:
         #     params["source"] = {
