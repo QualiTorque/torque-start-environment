@@ -11,16 +11,18 @@ inputs:
   sandbox_name:
     description: 'Provide a name for the Sandbox'
     required: false
+    default: sb-${{ github.ref_name }}
   torque_token:
     description: 'A Torque longterm token'
     required: true
-  torque_url:
+  torque_hostname:
     description: 'Alternative Torque server url'
     required: false
-    default: https://portal.qtorque.io
-  # branch:
-  #   description: 'Use the Blueprint version from a remote Git branch'
-  #   required: false
+    default: portal.qtorque.io
+  branch:
+    description: 'Use the Blueprint version from a remote Git branch'
+    required: false
+    default: ${{ github.ref_name }}
   duration:
     description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
     required: false
@@ -28,7 +30,7 @@ inputs:
   timeout:
     description: 'Set the time (minutes) to wait for the sandbox to become active. When setting to 0 the action will end with just the sandbox ID output.'
     required: false
-    default: '0'
+    default: 0
   inputs:
     required: false
     description: 'A comma-separated list of key=value pairs. For example: key1=value1, key2=value2'
@@ -36,56 +38,24 @@ inputs:
 outputs:
   sandbox_id:
     description: 'The ID of launched Torque Sandbox'
-    value: ${{ steps.start-sandbox.outputs.sandbox_id }}
   sandbox_details:
     description: 'The Full sandbox details in a json format'
-    value: ${{ steps.wait-sandbox.outputs.sandbox_details }}
 
 runs:
-  using: "composite"
-  steps:
-    - id: start-sandbox
-      run: |
-        if [ -n "${{ inputs.sandbox_name }}" ]; then
-          sb_name="${{ inputs.sandbox_name }}"
-        else
-          sb_name="${{ inputs.blueprint_name }}-build-${{ github.run_number }}"
-        fi
+  using: "docker"
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.blueprint_name }}
+    - ${{ inputs.sandbox_name }}
+    - ${{ inputs.branch }}
+    - ${{ inputs.duration }}
+    - ${{ inputs.timeout }}
+    - ${{ inputs.inputs }}
 
-        echo "Provided blueprint name: ${{ inputs.blueprint_name }}"
-        echo "Sandbox name: ${sb_name}"
-        echo "Space: ${{ inputs.space }}"
-
-        #Run start command
-        python3 ${{ github.action_path }}/start.py "${{ inputs.blueprint_name }}" "$sb_name" "${{ inputs.duration }}" \
-          "${{ inputs.inputs }}"
-          # "${{ inputs.branch }}" "${{ inputs.inputs }}"
-      env:
-        TORQUE_SPACE: ${{ inputs.space }}
-        TORQUE_TOKEN: ${{ inputs.torque_token }}
-        TORQUE_URL: ${{ inputs.torque_url }}
-      shell: bash
-          
-    - id: wait-sandbox
-      run: |
-        sandbox=${{ steps.start-sandbox.outputs.sandbox_id }}
-        timeout=${{ inputs.timeout }}
-
-        echo "Sandbox ID to wait: ${sandbox}"
-        echo "Minutes to wait: ${timeout}"
-
-        if [ "$timeout" = "0" ]; then
-          echo "No need to wait"
-        else 
-          #Run wait command
-          python3 ${{ github.action_path }}/wait.py "$sandbox" "$timeout"
-        fi
-      shell: bash
-      env:
-        TORQUE_SPACE: ${{ inputs.space }}
-        TORQUE_TOKEN: ${{ inputs.torque_token }}
-        TORQUE_URL: ${{ inputs.torque_url }}
-
+  env:
+    TORQUE_TOKEN: ${{ inputs.torque_token }}
+    TORQUE_SPACE: ${{ inputs.space }}
+    TORQUE_HOSTNAME: ${{ inputs.torque_hostname }}
         
 branding:
   icon: 'play-circle'  
