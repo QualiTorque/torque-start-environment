@@ -8,15 +8,15 @@ TIMEOUT=$5
 INPUTS=$6
 
 echo "Running torque start sandbox command"
-params="'$BP_NAME' -n '$SB_NAME' -b '$BRANCH' -d $DURATION"
+params="\"${BP_NAME}\" -n \"${SB_NAME}\" -b \"${BRANCH}\" -d ${DURATION}"
 
 env
 
 if [ "$TIMEOUT" -gt 0 ]; then
-    params="$params -w -t $TIMEOUT"
+    params="$params -w -t ${TIMEOUT}"
 fi
 if [ ! -z ${INPUTS} ]; then
-    params="$params -i '$INPUTS'"
+    params="$params -i \"${INPUTS}\""
 fi
 
 echo "The following parameters will be used: ${params}"
