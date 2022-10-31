@@ -21,7 +21,7 @@ fi
 
 echo "The following parameters will be used: ${params}"
 
-sandbox_id=`torque sb start ${params} --output=json`
+torque sb start ${params} # --output=json
 
-echo "Started sandbox with id '${sandbox_id}'"
-echo "sandbox_id=$sandbox_id" >> $GITHUB_OUTPUT
+# echo "Started sandbox with id '${sandbox_id}'"
+# echo "sandbox_id=$sandbox_id" >> $GITHUB_OUTPUT
