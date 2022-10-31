@@ -8,7 +8,7 @@ TIMEOUT=$5
 INPUTS=$6
 
 echo "Running torque start sandbox command"
-params="${BP_NAME} -n ${SB_NAME} -b ${BRANCH} -d ${DURATION}"
+params="${BP_NAME} -n ${SB_NAME} -d ${DURATION}"
 
 if [ "$TIMEOUT" -gt 0 ]; then
     params="$params -w -t ${TIMEOUT}"
