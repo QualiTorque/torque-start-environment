@@ -7,6 +7,9 @@ DURATION=$4
 TIMEOUT=$5
 INPUTS=$6
 
+ls -la
+pwd
+
 echo "Running torque start sandbox command"
 params="${BP_NAME} -n ${SB_NAME} -d ${DURATION}"
 
@@ -22,10 +25,12 @@ fi
 
 echo "The following parameters will be used: ${params}"
 
+echo "Starting the sandbox..."
 sandbox_id=$(torque --disable-version-check sb start ${params} --output=json | tr -d '"') || exit 1
 echo "Started sandbox with id '${sandbox_id}'"
 
 sandbox_details=$(torque --disable-version-check sb get ${sandbox_id} --output=json --detail | tr -d "\n") || exit 1
 
+echo "Writing data to outputs"
 echo "sandbox_id=${sandbox_id}" >> $GITHUB_OUTPUT
 echo "sandbox_details=${sandbox_details}" >> $GITHUB_OUTPUT
