@@ -7,9 +7,6 @@ DURATION=$4
 TIMEOUT=$5
 INPUTS=$6
 
-ls -la
-pwd
-
 echo "Running torque start sandbox command"
 params="${BP_NAME} -n ${SB_NAME} -d ${DURATION}"
 
