@@ -1,8 +1,8 @@
-# torque-start-sb-action
+# torque-start-environment
 
 This action integrates Torque into your CI/CD pipeline.
 
-You can configure your available build workflows to create an environment from any blueprint, start your tests and end the environment when finished (using [torque-end-sb-action](https://github.com/QualiTorque/torque-end-sb-action)).
+You can configure your available build workflows to create an environment from any blueprint, start your tests and end the environment when finished (using [torque-end-environment](https://github.com/QualiTorque/torque-end-environment)).
 
 To use this GitHub Action you need to have an account in Torque and an API token.
 
@@ -11,7 +11,7 @@ To use this GitHub Action you need to have an account in Torque and an API token
 ## Usage
 
 ```yaml
-- name: QualiTorque/torque-start-sb-action@v0.1.1
+- name: QualiTorque/torque-start-environment@v0.1.1
   with:
     # The name of the Torque Space your repository is connected to
     space: TestSpace
@@ -52,7 +52,7 @@ To use this GitHub Action you need to have an account in Torque and an API token
 
 ### CI
 
-The following example demonstrates how to use this action in combination with [torque-end-sb-action](https://github.com/QualiTorque/torque-end-sb-action) to run tests against some flask web application deployed inside a Torque environment:
+The following example demonstrates how to use this action in combination with [torque-end-environment](https://github.com/QualiTorque/torque-end-environment) to run tests against some flask web application deployed inside a Torque environment:
 
 ```yaml
 name: CI
@@ -86,7 +86,7 @@ jobs:
     steps:
     - name: Start Torque Environment
       id: start-env
-      uses: QualiTorque/torque-start-sb-action@v0.1.1
+      uses: QualiTorque/torque-start-environment@v0.1.1
       with:
         space: Demo
         blueprint_name: WebApp
@@ -102,7 +102,7 @@ jobs:
         echo "Do something with environment details json: ${{ steps.start-env.outputs.environment_details }}"
 
     - name: Stop environment
-      uses: QualiTorque/torque-end-sb-action@v0.1.0
+      uses: QualiTorque/torque-end-environment@v0.1.0
       with:
         space: Demo
         environment_id: ${{ steps.start-environment.outputs.environment_id }}
@@ -148,14 +148,14 @@ jobs:
       with:
         time: 100s
 
-  start-sb:
+  start-env:
     needs: validate
     runs-on: ubuntu-latest
 
     steps:
     - name: Start environment
       id: start-environment
-      uses: QualiTorque/torque-start-sb-action@v0.0.3
+      uses: QualiTorque/torque-start-environment@v0.0.3
       with:
         space: Demo
         blueprint_name: empty-bp-empty-app
@@ -165,7 +165,7 @@ jobs:
         timeout: 10
     - name: End environment on failure
       if: failure() && steps.start-environment.outputs.environment_id != ''
-      uses: QualiTorque/torque-end-sb-action@v0.0.1
+      uses: QualiTorque/torque-end-environment@v0.0.1
       with:
         space: Demo
         environment_id: ${{steps.start-environment.outputs.environment_id}}
@@ -175,14 +175,14 @@ jobs:
       environment_id: ${{ steps.start-environment.outputs.environment_id }}
 
   finish-all:
-    needs: [start-sb, some-parallel-job]
+    needs: [start-env, some-parallel-job]
     runs-on: ubuntu-latest
 
     steps:
     - name: Stop environment
-      uses: QualiTorque/torque-end-sb-action@v0.0.3
+      uses: QualiTorque/torque-end-environment@v0.0.3
       with:
         space: Demo
-        environment_id: ${{needs.start-sb.outputs.environment_id}}
+        environment_id: ${{needs.start-env.outputs.environment_id}}
         torque_token: ${{ secrets.TORQUE_TOKEN }}
 ```
