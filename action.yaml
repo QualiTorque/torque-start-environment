@@ -1,15 +1,15 @@
-name: 'Start Torque Sandbox'
-description: 'Starts a sandbox in Torque and returns its details'
+name: 'Start Torque Environment'
+description: 'Starts an Environment in Torque and returns its details'
 author: 'Quali'
 inputs:
   space:
-    description: 'The Torque space to start the sandbox in'
+    description: 'The Torque space to start the environment in'
     required: true
   blueprint_name:
     description: 'The name of the Blueprint to use'
     required: true
-  sandbox_name:
-    description: 'Provide a name for the Sandbox'
+  environment_name:
+    description: 'Provide a name for the Environment'
     required: false
     default: gh-build-${{ github.repository }}
   torque_token:
@@ -24,11 +24,11 @@ inputs:
     required: false
     default: ""
   duration:
-    description: 'The Sandbox will automatically de-provision at the end of the provided duration (minutes)'
+    description: 'The Environment will automatically de-provision at the end of the provided duration (minutes)'
     required: false
     default: '120'
   timeout:
-    description: 'Set the time (minutes) to wait for the sandbox to become active. When setting to 0 the action will end with just the sandbox ID output.'
+    description: 'Set the time (minutes) to wait for the environment to become active. When setting to 0 the action will end with just the Environment ID output.'
     required: false
     default: 0
   inputs:
@@ -37,17 +37,17 @@ inputs:
     default: ""
 
 outputs:
-  sandbox_id:
-    description: 'The ID of launched Torque Sandbox'
-  sandbox_details:
-    description: 'The Full sandbox details in a json format'
+  environment_id:
+    description: 'The ID of launched Torque Environment'
+  environment_details:
+    description: 'The Full Environment details in a json format'
 
 runs:
   using: "docker"
   image: 'Dockerfile'
   args:
     - ${{ inputs.blueprint_name }}
-    - ${{ inputs.sandbox_name }}
+    - ${{ inputs.environment_name }}
     - ${{ inputs.branch }}
     - ${{ inputs.duration }}
     - ${{ inputs.timeout }}
