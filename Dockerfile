@@ -1,4 +1,4 @@
-FROM ddovbii/torque-cli
+FROM qtorque/torque-cli
 
 COPY entrypoint.sh /entrypoint.sh
 
