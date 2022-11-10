@@ -23,10 +23,12 @@ fi
 echo "The following parameters will be used: ${params}"
 
 echo "Starting the environment..."
-environment_id=$(torque --disable-version-check env start ${params} --output=json | tr -d '"') || exit 1
+response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
+environment_id=$(echo "$response" | tr -d '"')
 echo "Started environment with id '${environment_id}'"
 
-environment_details=$(torque --disable-version-check env get ${environment_id} --output=json --detail | tr -d "\n") || exit 1
+response=$(torque --disable-version-check env get ${environment_id} --output=json --detail) || exit 1
+environment_details=$(echo "$response" | tr -d "\n")
 
 echo "Writing data to outputs"
 echo "environment_id=${environment_id}" >> $GITHUB_OUTPUT
