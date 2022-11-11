@@ -1,0 +1,20 @@
+name: Create Release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  update-semver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: haya14busa/action-update-semver@v1
+        with:
+          major_version_tag_only: true  # (optional, default is "false")
+      # Create release.
+      - name: Create Release
+        uses: shogo82148/actions-create-release@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
