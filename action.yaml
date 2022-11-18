@@ -57,6 +57,7 @@ runs:
     TORQUE_TOKEN: ${{ inputs.torque_token }}
     TORQUE_SPACE: ${{ inputs.space }}
     TORQUE_HOSTNAME: ${{ inputs.torque_hostname }}
+    TORQUE_USERAGENT: Torque-Plugin-Github-Start-Environment-Action/v1
         
 branding:
   icon: 'play-circle'  
