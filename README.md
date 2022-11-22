@@ -23,6 +23,9 @@ To use this GitHub Action you need to have an account in Torque and an API token
     # Provide the name of the blueprint to be used as a source for the environment.
     blueprint_name: WebApp
 
+    # Provide the name of a blueprints reposiory to take the blueprint_name from
+    repository_name: my-repo
+
     # [Optional] Provide a name for the environment. If not set, the name will be generated automatically
     # using the following pattern <BlueprintName>-build-<RunNumber>
     environment_name: demo-env
@@ -31,9 +34,9 @@ To use this GitHub Action you need to have an account in Torque and an API token
     # pairs. For example: key1=value1, key2=value2.
     inputs: 'PORT=8080,AWS_INSTANCE_TYPE=m5.large'
 
-    # [Optional] Provide the url string. In rare cases you migth want to override the main
-    # Torque server address 'https://portal.qtorque.io'. 
-    torque_url: "https://portal.qtorque.io"
+    # [Optional] Provide the hostname string. In rare cases you migth want to override the main
+    # Torque hostname address 'portal.qtorque.io'. 
+    torque_hostname: "mydomain.qtorque.io"
 
     # [Optional] Set the timeout to wait (in minutes) for the environment to become active. If not set, an
     # action just starts an environment and returns its ID without waiting for 'Active' status.
@@ -90,6 +93,7 @@ jobs:
       with:
         space: Demo
         blueprint_name: WebApp
+        repositoty_name: myRepo
         torque_token: ${{ secrets.TORQUE_TOKEN }}
         duration: 120
         timeout: 30
@@ -159,6 +163,7 @@ jobs:
       with:
         space: Demo
         blueprint_name: empty-bp-empty-app
+        repository_name: MyRepo
         torque_token: ${{ secrets.TORQUE_TOKEN }}
         branch: master
         duration: 30

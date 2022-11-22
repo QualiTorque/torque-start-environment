@@ -8,6 +8,8 @@ inputs:
   blueprint_name:
     description: 'The name of the Blueprint to use'
     required: true
+  repository_name:
+    description: 'The Blueprint repository name'
   environment_name:
     description: 'Provide a name for the Environment'
     required: false
@@ -47,6 +49,7 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.blueprint_name }}
+    - ${{ inputs.repository_name }}
     - ${{ inputs.environment_name }}
     - ${{ inputs.branch }}
     - ${{ inputs.duration }}
