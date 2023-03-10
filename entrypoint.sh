@@ -23,8 +23,12 @@ fi
 
 echo "The following parameters will be used: ${params}"
 
+command="torque --disable-version-check env start ${params} --output=json)"
+echo "The following command will be executed: ${command}"
+
 echo "Starting the environment..."
-response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
+response=$(eval $command) || exit 1
+# response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
 environment_id=$(echo "$response" | tr -d '"')
 echo "Started environment with id '${environment_id}'"
 
