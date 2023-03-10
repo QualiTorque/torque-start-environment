@@ -23,7 +23,7 @@ fi
 
 echo "The following parameters will be used: ${params}"
 
-command="torque --disable-version-check env start ${params} --output=json)"
+command="torque --disable-version-check env start ${params} --output=json"
 echo "The following command will be executed: ${command}"
 
 echo "Starting the environment..."
