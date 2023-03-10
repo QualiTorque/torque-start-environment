@@ -9,16 +9,16 @@ TIMEOUT="$6"
 INPUTS="$7"
 
 echo "Running torque start environment command"
-params="${BP_NAME} --repo ${REPO_NAME} -n ${ENV_NAME} -d ${DURATION}"
+params='$"{BP_NAME}" --repo "${REPO_NAME}" -n "${ENV_NAME}" -d "${DURATION}"'
 
 if [ "$TIMEOUT" -gt 0 ]; then
-    params="$params -w -t ${TIMEOUT}"
+    params='${params} -w -t "${TIMEOUT}"'
 fi
 if [ ! -z ${INPUTS} ]; then
-    params="$params -i ${INPUTS}"
+    params='${params} -i "${INPUTS}"'
 fi
 if [ ! -z ${BRANCH} ]; then
-    params="$params -b ${BRANCH}"
+    params='${params} -b "${BRANCH}"'
 fi
 
 echo "The following parameters will be used: ${params}"
