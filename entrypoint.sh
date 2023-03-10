@@ -1,12 +1,12 @@
 #!/bin/sh -l
 
-BP_NAME=$1
-REPO_NAME=$2
-ENV_NAME=$3
-BRANCH=$4
-DURATION=$5
-TIMEOUT=$6
-INPUTS=$7
+BP_NAME="$1"
+REPO_NAME="$2"
+ENV_NAME="$3"
+BRANCH="$4"
+DURATION="$5"
+TIMEOUT="$6"
+INPUTS="$7"
 
 echo "Running torque start environment command"
 params="${BP_NAME} --repo ${REPO_NAME} -n ${ENV_NAME} -d ${DURATION}"
