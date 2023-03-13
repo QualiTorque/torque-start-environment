@@ -1,52 +1,51 @@
-name: 'Start Torque Environment'
-description: 'Starts an Environment in Torque and returns its details'
-author: 'Quali'
+name: "Start Torque Environment"
+description: "Starts an Environment in Torque and returns its details"
+author: "Quali"
 inputs:
   space:
-    description: 'The Torque space to start the environment in'
+    description: "The Torque space to start the environment in"
     required: true
   blueprint_name:
-    description: 'The name of the Blueprint to use'
+    description: "The name of the Blueprint to use"
     required: true
   repository_name:
-    description: 'The Blueprint repository name'
+    description: "The Blueprint repository name"
   environment_name:
-    description: 'Provide a name for the Environment'
+    description: "Provide a name for the Environment"
     required: false
-    default: gh-build-${{ github.repository }}
   torque_token:
-    description: 'A Torque longterm token'
+    description: "A Torque longterm token"
     required: true
   torque_hostname:
-    description: 'Alternative Torque server url'
+    description: "Alternative Torque server url"
     required: false
     default: portal.qtorque.io
   branch:
-    description: 'Use the Blueprint version from a remote Git branch'
+    description: "Use the Blueprint version from a remote Git branch"
     required: false
     default: ""
   duration:
-    description: 'The Environment will automatically de-provision at the end of the provided duration (minutes)'
+    description: "The Environment will automatically de-provision at the end of the provided duration (minutes)"
     required: false
-    default: '120'
+    default: "120"
   timeout:
-    description: 'Set the time (minutes) to wait for the environment to become active. When setting to 0 the action will end with just the Environment ID output.'
+    description: "Set the time (minutes) to wait for the environment to become active. When setting to 0 the action will end with just the Environment ID output."
     required: false
     default: 0
   inputs:
     required: false
-    description: 'A comma-separated list of key=value pairs. For example: key1=value1, key2=value2'
+    description: "A comma-separated list of key=value pairs. For example: key1=value1, key2=value2"
     default: ""
 
 outputs:
   environment_id:
-    description: 'The ID of launched Torque Environment'
+    description: "The ID of launched Torque Environment"
   environment_details:
-    description: 'The Full Environment details in a json format'
+    description: "The Full Environment details in a json format"
 
 runs:
   using: "docker"
-  image: 'Dockerfile'
+  image: "Dockerfile"
   args:
     - ${{ inputs.blueprint_name }}
     - ${{ inputs.repository_name }}
@@ -61,7 +60,7 @@ runs:
     TORQUE_SPACE: ${{ inputs.space }}
     TORQUE_HOSTNAME: ${{ inputs.torque_hostname }}
     TORQUE_USERAGENT: Torque-Plugin-Github-Start-Environment-Action/v1
-        
+
 branding:
-  icon: 'play-circle'  
-  color: 'blue'
+  icon: "play-circle"
+  color: "blue"
