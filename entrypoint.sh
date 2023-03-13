@@ -23,8 +23,6 @@ if [ ! -z "${BRANCH}" ]; then
     params="$params -b \"${BRANCH}\""
 fi
 
-echo "The following parameters will be used: ${params}"
-
 command="torque --disable-version-check env start ${params} --output=json"
 echo "The following command will be executed: ${command}"
 
