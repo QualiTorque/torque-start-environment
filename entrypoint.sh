@@ -8,6 +8,8 @@ DURATION="$5"
 TIMEOUT="$6"
 INPUTS="$7"
 
+ENV_NAME="${ENV_NAME:-$BP_NAME-build-$GITHUB_RUN_NUMBER}"
+
 echo "Running torque start environment command"
 params="\"${BP_NAME}\" --repo \"${REPO_NAME}\" -n \"${ENV_NAME}\" -d \"${DURATION}\""
 

@@ -13,7 +13,6 @@ inputs:
   environment_name:
     description: "Provide a name for the Environment"
     required: false
-    default: ${{ inputs.blueprint_name }}-build-${{ github.run_number }}
   torque_token:
     description: "A Torque longterm token"
     required: true
