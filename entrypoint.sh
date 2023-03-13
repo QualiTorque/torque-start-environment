@@ -8,6 +8,8 @@ DURATION="$5"
 TIMEOUT="$6"
 INPUTS="$7"
 
+ENV_NAME="${ENV_NAME:-$BP_NAME-build-$GITHUB_RUN_NUMBER}"
+
 echo "Running torque start environment command"
 params="\"${BP_NAME}\" --repo \"${REPO_NAME}\" -n \"${ENV_NAME}\" -d \"${DURATION}\""
 
@@ -20,8 +22,6 @@ fi
 if [ ! -z "${BRANCH}" ]; then
     params="$params -b \"${BRANCH}\""
 fi
-
-echo "The following parameters will be used: ${params}"
 
 command="torque --disable-version-check env start ${params} --output=json"
 echo "The following command will be executed: ${command}"
