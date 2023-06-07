@@ -6,8 +6,6 @@ You can configure your available build workflows to create an environment from a
 
 To use this GitHub Action you need to have an account in Torque and an API token.
 
-> **_NOTE:_** Torque spec 1 support is available in releases <0.1.0 
-
 ## Usage
 
 ```yaml
