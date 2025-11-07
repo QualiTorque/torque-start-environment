@@ -33,12 +33,24 @@ command="/Quali.Torque.Cli/torque-cli env start ${params} --detail"
 echo "The following command will be executed: ${command}"
 
 echo "Starting the environment..."
-response=$(eval $command) || exit 1
+response=$(eval $command 2>&1)
+exit_code=$?
+if [ $exit_code -ne 0 ]; then
+    echo "Error: Failed to start environment"
+    echo "$response"
+    exit $exit_code
+fi
 # response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
 environment_id=$(echo "$response" | tr -d '"')
 echo "Started environment with id '${environment_id}'"
 
-response=$(/Quali.Torque.Cli/torque-cli env get ${environment_id} --detail) || echo $response && exit 1
+response=$(/Quali.Torque.Cli/torque-cli env get ${environment_id} --detail 2>&1)
+exit_code=$?
+if [ $exit_code -ne 0 ]; then
+    echo "Error: Failed to get environment details"
+    echo "$response"
+    exit $exit_code
+fi
 environment_details=$(echo "$response" | tr -d "\n")
 
 echo "Writing data to outputs"
