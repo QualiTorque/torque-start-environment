@@ -29,7 +29,7 @@ fi
 
 
  
-command="/Quali.Torque.Cli/torque-cli env start ${params} --detail"
+command="/Quali.Torque.Cli/torque-cli env start ${params} --token $TORQUE_TOKEN --detail"
 echo "The following command will be executed: ${command}"
 
 echo "Starting the environment..."
@@ -44,7 +44,7 @@ fi
 environment_id=$(echo "$response" | tr -d '"')
 echo "Started environment with id '${environment_id}'"
 
-response=$(/Quali.Torque.Cli/torque-cli env get ${environment_id} --detail 2>&1)
+response=$(/Quali.Torque.Cli/torque-cli env get ${environment_id} --token $TORQUE_TOKEN --detail 2>&1)
 exit_code=$?
 if [ $exit_code -ne 0 ]; then
     echo "Error: Failed to get environment details"
