@@ -54,6 +54,7 @@ runs:
     - ${{ inputs.duration }}
     - ${{ inputs.timeout }}
     - ${{ inputs.inputs }}
+    - ${{ inputs.space }}
 
   env:
     TORQUE_TOKEN: ${{ inputs.torque_token }}

@@ -7,11 +7,12 @@ BRANCH="$4"
 DURATION="$5"
 TIMEOUT="$6"
 INPUTS="$7"
+SPACE="$8"
 
 ENV_NAME="${ENV_NAME:-$BP_NAME-build-$GITHUB_RUN_NUMBER}"
 
 echo "Running torque start environment command"
-params="\"${BP_NAME}\" -s 03-Live --name \"${ENV_NAME}\" -d \"${DURATION}\""
+params="\"${BP_NAME}\" --space \"${SPACE}\" --name \"${ENV_NAME}\" -d \"${DURATION}\""
 
 if [ "$TIMEOUT" -gt 0 ]; then
     params="$params -w -t ${TIMEOUT}"
