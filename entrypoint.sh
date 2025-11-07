@@ -40,9 +40,14 @@ if [ $exit_code -ne 0 ]; then
     echo "$response"
     exit $exit_code
 fi
-# response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
-# Extract just the environment ID from the response (look for "id: <ID>" pattern)
-environment_id=$(echo "$response" | grep -oE 'id: [a-zA-Z0-9]+' | sed 's/id: //' | tail -1)
+
+# Extract just the environment ID from the response
+# Try to find JSON-like pattern with "id:" field (handles both single and multi-line)
+environment_id=$(echo "$response" | grep -oE '"?id"?\s*:\s*"?[a-zA-Z0-9]+"?' | sed -E 's/.*:\s*"?([a-zA-Z0-9]+)"?.*/\1/' | tail -1)
+if [ -z "$environment_id" ]; then
+    # Fallback: try simpler pattern without quotes
+    environment_id=$(echo "$response" | grep -oE 'id:\s*[a-zA-Z0-9]+' | sed 's/id:\s*//' | tail -1)
+fi
 if [ -z "$environment_id" ]; then
     echo "Error: Could not extract environment ID from response"
     echo "$response"
