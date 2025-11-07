@@ -29,7 +29,7 @@ fi
 
 
  
-command="/Quali.Torque.Cli/torque-cli env start ${params} --token $TORQUE_TOKEN --detail"
+command="/Quali.Torque.Cli/torque-cli env start ${params} --token $TORQUE_TOKEN"
 echo "The following command will be executed: ${command}"
 
 echo "Starting the environment..."
@@ -41,13 +41,8 @@ if [ $exit_code -ne 0 ]; then
     exit $exit_code
 fi
 
-# Extract just the environment ID from the response
-# Try to find JSON-like pattern with "id:" field (handles both single and multi-line)
-environment_id=$(echo "$response" | grep -oE '"?id"?\s*:\s*"?[a-zA-Z0-9]+"?' | sed -E 's/.*:\s*"?([a-zA-Z0-9]+)"?.*/\1/' | tail -1)
-if [ -z "$environment_id" ]; then
-    # Fallback: try simpler pattern without quotes
-    environment_id=$(echo "$response" | grep -oE 'id:\s*[a-zA-Z0-9]+' | sed 's/id:\s*//' | tail -1)
-fi
+# Extract just the environment ID from the response (look for "ID: <ID>" pattern)
+environment_id=$(echo "$response" | grep -oE 'ID: [a-zA-Z0-9]+' | sed 's/ID: //' | tail -1)
 if [ -z "$environment_id" ]; then
     echo "Error: Could not extract environment ID from response"
     echo "$response"
