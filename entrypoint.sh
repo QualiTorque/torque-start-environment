@@ -41,7 +41,13 @@ if [ $exit_code -ne 0 ]; then
     exit $exit_code
 fi
 # response=$(torque --disable-version-check env start ${params} --output=json) || exit 1
-environment_id=$(echo "$response" | tr -d '"')
+# Extract just the environment ID from the response (look for "id: <ID>" pattern)
+environment_id=$(echo "$response" | grep -oE 'id: [a-zA-Z0-9]+' | sed 's/id: //' | tail -1)
+if [ -z "$environment_id" ]; then
+    echo "Error: Could not extract environment ID from response"
+    echo "$response"
+    exit 1
+fi
 echo "Started environment with id '${environment_id}'"
 
 response=$(/Quali.Torque.Cli/torque-cli env get ${environment_id} --token $TORQUE_TOKEN --detail 2>&1)
